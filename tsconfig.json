@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "es2022",
+    "lib": ["es2022"],
+    "allowJs": true,
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": { // so ide dont complain
+      "version": ["src/version/v59/android/arm64/version.ts"]
+    }
+  },
+  "exclude": ["script.js"]
+}

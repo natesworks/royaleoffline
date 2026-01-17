@@ -1,0 +1,41 @@
+import { create } from "domain";
+import { ByteStream } from "src/bytestream";
+import { createMessageByType } from "src/definitions";
+
+export const version = {
+  gmv: 59,
+  platform: "android",
+  architecture: "x86",
+  offsets: {
+    ServerConnectionUpdate: 0xc00c6,
+    CreateMessageByType: 0x278438,
+    OperatorNew: 0x615ab0,
+    ReceiveMessage: 0xb9034,
+    MessageManagerInstance: 0x8ada3c,
+    Send: 0x2e2640,
+    SendMessage: 0xb8e2a,
+
+    DebuggerError: 0x3abfb0,
+    DebuggerWarning: 0x3abbd0,
+
+    ServerConnectionMessaging: 4,
+    Connection: 64,
+    State: 4,
+    HasConnectFailed: 104,
+
+    GetMessageType: 20,
+    Destruct: 24,
+    Encode: 8,
+    Decode: 12,
+
+    ByteStream: 8,
+    Version: 4,
+
+    PayloadPtr: 28,
+    PayloadSize: 20,
+    PayloadOffset: 16,
+
+    CreateMessageByTypeCMP: 0x278455,
+    CreateMessageByTypeJumpAddress: 0x278499,
+  },
+};
