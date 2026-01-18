@@ -1,4 +1,4 @@
-import { base, malloc, mkdir, pkgName } from "./definitions.js";
+import { base, malloc, mkdir, pkgName, stringCtor } from "./definitions.js";
 import { Offsets } from "./offsets.js";
 import { isAndroid } from "./platform.js";
 
@@ -139,4 +139,44 @@ export function waitForModule(
       }
     }, intervalMs);
   });
+}
+
+export function decodeString(src: NativePointer): string | null {
+  let len = src.add(4).readInt();
+  if (len >= 8) {
+    return src.add(8).readPointer().readUtf8String(len);
+  }
+  return src.add(8).readUtf8String(len);
+}
+
+export function createStringObject(text: string) {
+  let ptr = malloc(128);
+  stringCtor(ptr, Memory.allocUtf8String(text));
+  return ptr;
+}
+
+export function backtrace(ctx: CpuContext | undefined): void {
+  const frames: any[] = Thread.backtrace(ctx, Backtracer.FUZZY);
+  let lastAddr = "";
+  let printed = 0;
+  for (let i = 0; i < frames.length; i++) {
+    const f = frames[i];
+    const addrStr =
+      typeof f === "string" || typeof f === "number" ? String(f) : f.toString();
+    if (addrStr === lastAddr) continue;
+    lastAddr = addrStr;
+    const address = ptr(addrStr);
+    const m = Process.findModuleByAddress(address);
+    if (m) {
+      const off = address.sub(m.base).toString();
+      console.log(
+        `${printed.toString().padStart(2, " ")}  ${m.name} + ${off}  (${address})`,
+      );
+    } else {
+      console.log(
+        `${printed.toString().padStart(2, " ")}  <unknown>  (${address})`,
+      );
+    }
+    printed++;
+  }
 }

@@ -37,5 +37,15 @@ export const version = {
 
     CreateMessageByTypeCMP: 0x278455,
     CreateMessageByTypeJumpAddress: 0x278499,
+
+    StringConstructor: 0x2e98f0,
+
+    GetCSV: 0x332cf0,
+    GetTable: 0x3a6650,
+    GetColumnCount: 0x3a79e0,
+    GetColumnIndexByName: 0x3a7df0,
+    GetRowCount: 0x3a8330,
+    GetRowAt: 0x3a8080,
+    GetRowName: 0x3a6ff0,
   },
 };

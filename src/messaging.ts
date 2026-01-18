@@ -11,6 +11,7 @@ import { OwnHomeDataMessage } from "OwnHomeDataMessage";
 import { Logger } from "./utility/logger";
 import { LoginOkMessage } from "./packets/server/loginokmessage";
 import { ByteStream } from "./bytestream";
+import { CSV } from "./csv";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -44,8 +45,9 @@ export class Messaging {
     switch (id) {
       // LoginMessage
       case 10101: {
+        CSV.getCards();
         Messaging.sendOfflineMessage(20104, LoginOkMessage.encode());
-        //Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
+        Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
         break;
       }
     }
