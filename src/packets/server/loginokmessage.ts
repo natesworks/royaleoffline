@@ -6,7 +6,7 @@ export class LoginOkMessage {
 
     stream.writeLong(0, 1);
     stream.writeLong(0, 1);
-    stream.writeString("");
+    stream.writeString(""); // token
     stream.writeString("");
     stream.writeString("");
     stream.writeVInt(1); // doesnt matter
@@ -20,13 +20,13 @@ export class LoginOkMessage {
     stream.writeString("");
     stream.writeString("");
     stream.writeVInt(0);
+    stream.writeString("G:1");
     stream.writeString("");
-    stream.writeString("");
-    stream.writeString("EN");
-    stream.writeString("");
+    stream.writeString("DE");
+    stream.writeString("Berlin");
 
     stream.writeString("https://game-assets.clashroyaleapp.com");
-    stream.writeString("");
+    stream.writeString("https://game-assets.clashroyaleapp.com/");
     stream.writeString("https://event-assets.clashroyale.com");
 
     return stream.payload;
