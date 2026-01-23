@@ -184,61 +184,23 @@ export class ByteStream {
 
   writeVInt(value: number) {
     this.bitoffset = 0;
-    if (value < 0) {
-      if (value >= -63) {
-        this.payload.push((value & 0x3f) | 0x40);
-        this.offset += 1;
-      } else if (value >= -8191) {
-        this.payload.push((value & 0x3f) | 0xc0);
-        this.payload.push((value >> 6) & 0x7f);
-        this.offset += 2;
-      } else if (value >= -1048575) {
-        this.payload.push((value & 0x3f) | 0xc0);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push((value >> 13) & 0x7f);
-        this.offset += 3;
-      } else if (value >= -134217727) {
-        this.payload.push((value & 0x3f) | 0xc0);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push(((value >> 13) & 0x7f) | 0x80);
-        this.payload.push((value >> 20) & 0x7f);
-        this.offset += 4;
-      } else {
-        this.payload.push((value & 0x3f) | 0xc0);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push(((value >> 13) & 0x7f) | 0x80);
-        this.payload.push(((value >> 20) & 0x7f) | 0x80);
-        this.payload.push((value >> 27) & 0xf);
-        this.offset += 5;
-      }
-    } else {
-      if (value <= 63) {
-        this.payload.push(value & 0x3f);
-        this.offset += 1;
-      } else if (value <= 8191) {
-        this.payload.push((value & 0x3f) | 0x80);
-        this.payload.push((value >> 6) & 0x7f);
-        this.offset += 2;
-      } else if (value <= 1048575) {
-        this.payload.push((value & 0x3f) | 0x80);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push((value >> 13) & 0x7f);
-        this.offset += 3;
-      } else if (value <= 134217727) {
-        this.payload.push((value & 0x3f) | 0x80);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push(((value >> 13) & 0x7f) | 0x80);
-        this.payload.push((value >> 20) & 0x7f);
-        this.offset += 4;
-      } else {
-        this.payload.push((value & 0x3f) | 0x80);
-        this.payload.push(((value >> 6) & 0x7f) | 0x80);
-        this.payload.push(((value >> 13) & 0x7f) | 0x80);
-        this.payload.push(((value >> 20) & 0x7f) | 0x80);
-        this.payload.push((value >> 27) & 0xf);
-        this.offset += 5;
-      }
+    let temp = (value >> 25) & 0x40;
+    let flipped = value ^ (value >> 31);
+
+    temp |= value & 0x3f;
+    value >>= 6;
+
+    if ((flipped >>= 6) == 0) {
+      this.writeByte(temp);
+      return;
     }
+
+    this.writeByte(temp | 0x80);
+
+    do {
+      this.writeByte((value & 0x7f) | ((flipped >>= 7) != 0 ? 0x80 : 0));
+      value >>= 7;
+    } while (flipped != 0);
   }
 
   writeVLong(high: number, low: number) {
@@ -264,7 +226,8 @@ export class ByteStream {
     this.writeInt(low);
   }
 
-  writeHexa(hex: string): void {
+  writeHex(hex: string): void {
+    this.bitoffset = 0;
     for (let i = 0; i < hex.length; i += 2) {
       const byteStr = hex.substring(i, i + 2);
       const byte = parseInt(byteStr, 16);
