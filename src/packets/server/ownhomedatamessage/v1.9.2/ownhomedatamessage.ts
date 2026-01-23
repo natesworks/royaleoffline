@@ -100,23 +100,6 @@ export class OwnHomeDataMessage {
 
     // chests
     stream.writeVInt(4);
-    for (let i = 0; i < 0; i++) {
-      stream.writeVInt(0);
-
-      stream.writeVInt(19); // Instance Id
-      stream.writeVInt(219); // Class Id
-      stream.writeVInt(1); // Unlocked // 8 - unlocking -> timer
-
-      stream.writeVInt(0);
-      stream.writeVInt(0);
-      stream.writeVInt(0);
-
-      stream.writeBoolean(false); // Claimed
-      stream.writeBoolean(false); // New
-      stream.writeVInt(0);
-      stream.writeVInt(0);
-      stream.writeVInt(0);
-    }
     stream.writeVInt(0);
 
     stream.writeVInt(0); // free chest timer
@@ -142,8 +125,9 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
     stream.writeVInt(0);
 
-    stream.writeVInt(0);
-    stream.writeVInt(0);
+    stream.writeVInt(-1);
+    stream.writeVInt(1714640);
+    stream.writeVInt(1726960);
     stream.writeVInt(0);
 
     stream.writeVInt(0);
@@ -162,7 +146,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
 
     stream.writeVInt(2);
-    stream.writeVInt(0); // xp level
+    stream.writeVInt(1); // xp level
 
     stream.writeVInt(54); // data type/class id
     stream.writeVInt(0); // instance id
@@ -421,7 +405,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(8);
-    stream.writeVInt(0); // Cards found
+    stream.writeVInt(5); // Cards found
 
     stream.writeVInt(5);
     stream.writeVInt(1); // Count
@@ -443,7 +427,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0); // FreeDiamonds
 
     stream.writeVInt(0); // ExpPoints
-    stream.writeVInt(0); // ExpLevel
+    stream.writeVInt(1); // ExpLevel
 
     stream.writeVInt(0); // AvatarUserLevelTier
 
