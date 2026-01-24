@@ -17,7 +17,8 @@ import { version } from "version";
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
     onEnter(args) {
-      Logger.warn(args[0].readUtf8String());
+      let text = args[0].readUtf8String();
+      if (false) Logger.warn(text);
     },
   });
 

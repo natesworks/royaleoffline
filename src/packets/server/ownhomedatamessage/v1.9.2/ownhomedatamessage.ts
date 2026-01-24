@@ -1,10 +1,12 @@
 import { ByteStream } from "src/bytestream";
+import { CSV } from "src/csv";
 import { GlobalID } from "src/globalid";
 import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
     let stream = new ByteStream([]);
+    let characters = CSV.getSpells();
 
     // LogicClientHome
     stream.writeLong(0, 1); // player id
@@ -17,14 +19,10 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0); // last login timestamp
 
-    stream.writeVInt(5); // deck count
-    let xyz = [
-      26000021, 28000008, 28000011, 26000046, 26000043, 26000015, 26000039,
-      26000041,
-    ];
-    for (let i = 0; i < 5; i++) {
+    stream.writeVInt(3); // deck count
+    for (let i = 0; i < 3; i++) {
       stream.writeVInt(8);
-      for (let x = 0; x < 8; x++) stream.writeVInt(xyz[x]);
+      for (let x = 0; x < 8; x++) stream.writeVInt(characters[x]);
     }
 
     for (let i = 0; i < 8; i++) {
@@ -32,7 +30,7 @@ export class OwnHomeDataMessage {
     }
 
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(xyz[i]));
+      stream.writeVInt(GlobalID.getInstanceId(characters[i]));
       stream.writeVInt(0); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
@@ -42,8 +40,19 @@ export class OwnHomeDataMessage {
       stream.writeBoolean(false);
     }
 
+    Logger.debug(characters.length);
+    stream.writeVInt(characters.length - 8);
+    for (let i = 0; i < characters.length - 8; i++) {
+      stream.writeVInt(GlobalID.getInstanceId(characters[i + 8]));
+      stream.writeVInt(0); // level
+      stream.writeVInt(0);
+      stream.writeVInt(0); // count
+      stream.writeVInt(0);
+      stream.writeVInt(0);
+      stream.writeBoolean(false);
+      stream.writeBoolean(false);
+    }
     stream.writeVInt(0);
-    stream.writeVInt(1);
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -91,7 +100,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0); // challenge events
 
-    stream.writeVInt(1);
+    stream.writeVInt(1); // events
     stream.writeVInt(1109);
 
     stream.writeVInt(2);
@@ -273,14 +282,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
 
     // Missions
-    stream.writeVInt(2);
-    {
-      stream.writeVInt(26);
-      stream.writeVInt(46);
-
-      stream.writeVInt(28);
-      stream.writeVInt(16);
-    }
+    stream.writeVInt(0);
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -330,7 +332,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0);
     stream.writeVInt(0);
-    stream.writeVInt(1337); // Legendary Trophies
+    stream.writeVInt(0); // Legendary Trophies
 
     stream.writeVInt(0); // Current Season Trophies
     stream.writeVInt(0);

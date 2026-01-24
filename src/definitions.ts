@@ -47,10 +47,15 @@ export let getCSV: NativeFunction<NativePointer, [NativePointerValue]>;
 export let getTable: NativeFunction<NativePointer, [NativePointerValue]>;
 export let getColumnCount: NativeFunction<number, [NativePointerValue]>;
 export let getRowCount: NativeFunction<number, [NativePointerValue]>;
-export let getRowAt:
-  | NativeFunction<NativePointer, [NativePointerValue, number]>
-  | (() => void);
-export let getRowName;
+export let getRowAt: NativeFunction<
+  NativePointer,
+  [NativePointerValue, number]
+>;
+export let getBooleanValueAt: NativeFunction<
+  number,
+  [NativePointerValue, number]
+>;
+export let getRowName: NativeFunction<NativePointer, [NativePointerValue]>;
 
 export function load() {
   setupOffsets();
@@ -96,6 +101,11 @@ export function load() {
   getRowName = new NativeFunction(base.add(Offsets.GetRowName), "pointer", [
     "pointer",
   ]);
+  getBooleanValueAt = new NativeFunction(
+    base.add(Offsets.GetBooleanValueAt),
+    "bool",
+    ["pointer", "int"],
+  );
 }
 
 export function setBase(ptr: NativePointer) {
