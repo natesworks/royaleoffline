@@ -1,6 +1,4 @@
 import { ByteStream } from "src/bytestream";
-import { GlobalID } from "src/globalid";
-import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
@@ -12,10 +10,11 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
 
     stream.writeVInt(1); // free chest id
-    // timer
-    for (let i = 0; i < 3; i++) stream.writeVInt(0);
+    stream.writeVLong(0, 0); // free chest timer
 
     stream.writeVInt(0); // last login timestamp
+
+    stream.writeByte(0);
 
     stream.writeVInt(5); // deck count
     let xyz = [
@@ -27,19 +26,16 @@ export class OwnHomeDataMessage {
       for (let x = 0; x < 8; x++) stream.writeVInt(xyz[x]);
     }
 
-    for (let i = 0; i < 8; i++) {
-      stream.writeBoolean(true);
-    }
+    stream.writeByte(255);
 
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(xyz[i]));
-      stream.writeVInt(0); // level
+      stream.writeVInt(xyz[i]);
+      stream.writeVInt(1);
       stream.writeVInt(0);
-      stream.writeVInt(0); // count
+      stream.writeVInt(1); // count
       stream.writeVInt(0);
       stream.writeVInt(0);
-      stream.writeBoolean(false);
-      stream.writeBoolean(false);
+      stream.writeVInt(0); // is new
     }
 
     stream.writeVInt(0);

@@ -8,17 +8,11 @@ import {
   getRowCount,
   getRowName,
   getTable,
-  resourceManager,
-  resourcesArray,
-  setResourceManager,
-  setResourcesArray,
 } from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { version } from "version";
-import { LogicDataTableArrayList } from "./csv/logicdatatablearraylist.js";
-import { backtrace, createStringObject, decodeString } from "./util.js";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {

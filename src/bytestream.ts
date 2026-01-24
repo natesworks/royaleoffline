@@ -228,6 +228,13 @@ export class ByteStream {
 
   writeHex(hex: string): void {
     this.bitoffset = 0;
+
+    hex = hex.replace(/[\s-]/g, "");
+
+    if (hex.length % 2 !== 0) {
+      throw new Error("invalid hex length");
+    }
+
     for (let i = 0; i < hex.length; i += 2) {
       const byteStr = hex.substring(i, i + 2);
       const byte = parseInt(byteStr, 16);
