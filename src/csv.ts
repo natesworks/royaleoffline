@@ -46,4 +46,13 @@ export class CSV {
     });
     return result;
   }
+
+  static getBuildings() {
+    let result: number[] = [];
+    let spells = this.getSpells();
+    spells.forEach((val) => {
+      if (GlobalID.getClassId(val) == 27) result.push(val);
+    });
+    return result;
+  }
 }

@@ -12,6 +12,7 @@ import { OwnHomeDataMessage } from "OwnHomeDataMessage";
 import { Logger } from "./utility/logger";
 import { LoginOkMessage } from "./packets/server/loginokmessage";
 import { ByteStream } from "./bytestream";
+import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -47,6 +48,10 @@ export class Messaging {
       case 10101: {
         Messaging.sendOfflineMessage(20104, LoginOkMessage.encode());
         Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
+        break;
+      }
+      case 14104: {
+        Messaging.sendOfflineMessage(21903, NpcSectorStateMessage.encode());
         break;
       }
     }

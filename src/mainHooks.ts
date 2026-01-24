@@ -13,18 +13,31 @@ import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { version } from "version";
+import { backtrace } from "./util.js";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
     onEnter(args) {
       let text = args[0].readUtf8String();
-      if (false) Logger.warn(text);
+      Logger.warn(text);
     },
   });
 
   Interceptor.attach(base.add(Offsets.DebuggerError), {
     onEnter(args) {
       Logger.error(args[0].readUtf8String());
+      Logger.debug("Backtrace:");
+      backtrace(this.context);
+    },
+  });
+
+  Interceptor.attach(base.add(0x1ff980), {
+    onEnter(retval) {
+      Interceptor.attach(base.add(0x2879be), {
+        onLeave(retval) {
+          Logger.error(retval.readU32());
+        },
+      });
     },
   });
 

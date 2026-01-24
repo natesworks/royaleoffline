@@ -1,6 +1,7 @@
 import { base, malloc, mkdir, pkgName, stringCtor } from "./definitions.js";
 import { Offsets } from "./offsets.js";
 import { isAndroid } from "./platform.js";
+import { Logger } from "./utility/logger.js";
 
 const read = new NativeFunction(
   Process.getModuleByName(
@@ -169,11 +170,11 @@ export function backtrace(ctx: CpuContext | undefined): void {
     const m = Process.findModuleByAddress(address);
     if (m) {
       const off = address.sub(m.base).toString();
-      console.log(
+      Logger.debug(
         `${printed.toString().padStart(2, " ")}  ${m.name} + ${off}  (${address})`,
       );
     } else {
-      console.log(
+      Logger.debug(
         `${printed.toString().padStart(2, " ")}  <unknown>  (${address})`,
       );
     }
