@@ -11,14 +11,4 @@ Logger.info("Clash Royale Offline created by Natesworks");
 Logger.info("Powered by Frida");
 Logger.info("Running on", isAndroid ? "Android" : "iOS");
 Logger.verbose(`${library} loaded at: ${base}`);
-Memory.patchCode(
-  base.add(Offsets.CreateMessageByTypeCMP),
-  Process.pageSize,
-  (code) => {
-    const pcWriter = new X86Writer(code);
-    pcWriter.putNop();
-    pcWriter.putJmpAddress(base.add(Offsets.CreateMessageByTypeJumpAddress));
-    pcWriter.flush();
-  },
-);
 installHooks();

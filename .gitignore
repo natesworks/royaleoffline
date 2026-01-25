@@ -3,3 +3,4 @@ script.js
 refresh-ios.sh
 venv
 dumps
+script.compiled.js

@@ -3,7 +3,7 @@ import { ByteStream } from "src/bytestream";
 import { createMessageByType } from "src/definitions";
 
 export const version = {
-  gmv: 59,
+  gmv: "1.9.2",
   platform: "android",
   architecture: "x86",
   offsets: {
@@ -49,5 +49,7 @@ export const version = {
     GetRowName: 0x3a6ff0,
     GetBooleanValueAt: 0x3a7110,
     GetIntegerValueAt: 0x3a7160,
+
+    AAssetManagerOpen: 0x5a140,
   },
 };

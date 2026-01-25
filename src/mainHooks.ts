@@ -44,6 +44,34 @@ export function installHooks() {
     },
   });
 
+  if (Process.arch == "ia32") {
+    Memory.patchCode(
+      base.add(Offsets.CreateMessageByTypeCMP),
+      Process.pageSize,
+      (code) => {
+        const pcWriter = new X86Writer(code);
+        pcWriter.putNop();
+        pcWriter.putJmpAddress(
+          base.add(Offsets.CreateMessageByTypeJumpAddress),
+        );
+        pcWriter.flush();
+      },
+    );
+  } else if (Process.arch == "arm") {
+    Memory.patchCode(
+      base.add(Offsets.CreateMessageByTypeLDRB),
+      Process.pageSize,
+      (code) => {
+        const pcWriter = new Arm64Writer(code);
+        pcWriter.putNop();
+        pcWriter.putBranchAddress(
+          base.add(Offsets.CreateMessageByTypeJumpAddress),
+        );
+        pcWriter.flush();
+      },
+    );
+  }
+
   Interceptor.replace(
     base.add(Offsets.Send),
     new NativeCallback(
