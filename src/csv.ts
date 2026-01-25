@@ -31,7 +31,6 @@ export class CSV {
         let row = getRowAt(table, i);
         let isNotInUse = getBooleanValueAt(row, 6);
         let powerLevel = getIntegerValueAt(row, 47);
-        Logger.debug(powerLevel);
         if (!isNotInUse) {
           result.push(
             new Character(

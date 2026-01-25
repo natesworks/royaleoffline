@@ -1,12 +1,14 @@
 import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
 import { GlobalID } from "src/globalid";
+import { AssetManager } from "src/utility/assetmanager";
 import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
     let stream = new ByteStream([]);
-    let characters = CSV.getSpells();
+    const characters = CSV.getSpells();
+    const config = JSON.parse(AssetManager.readFromAssets("config.json"));
 
     // LogicClientHome
     stream.writeLong(0, 1); // player id
@@ -158,10 +160,9 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
 
     stream.writeVInt(2);
-    stream.writeVInt(1); // xp level
+    stream.writeVInt(config.level); // xp level
 
-    stream.writeVInt(54); // data type/class id
-    stream.writeVInt(0); // instance id
+    stream.writeDataReference(54, 0);
 
     //shop
     stream.writeVInt(1); // shop day
@@ -325,9 +326,9 @@ export class OwnHomeDataMessage {
     stream.writeString("Natesworks");
     stream.writeBoolean(true); // name set by user
 
-    stream.writeVInt(1); // current arena
+    stream.writeVInt(config.arena); // current arena
 
-    stream.writeVInt(0); // trophies
+    stream.writeVInt(config.trophies); // trophies
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -339,11 +340,11 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0); // Best Season Trophies
     stream.writeVInt(0); // Rank
-    stream.writeVInt(100); // Trophies
+    stream.writeVInt(0); // Trophies
 
     // League
-    stream.writeVInt(100); // Current Trophies
-    stream.writeVInt(50); // Past Trophies
+    stream.writeVInt(0); // Current Trophies
+    stream.writeVInt(0); // Past Trophies
     stream.writeVInt(1);
     stream.writeVInt(0);
     stream.writeVInt(0); // set this 1 and it appears on the profile
@@ -358,7 +359,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(1);
-    stream.writeVInt(0); // Gold
+    stream.writeVInt(config.gold); // Gold
 
     stream.writeVInt(5);
     stream.writeVInt(3);
@@ -370,11 +371,11 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(5);
-    stream.writeVInt(0); // Gold
+    stream.writeVInt(config.gold); // Gold
 
     stream.writeVInt(5);
     stream.writeVInt(13);
-    stream.writeVInt(0); // New Gold
+    stream.writeVInt(config.gold); // New Gold
 
     stream.writeVInt(5);
     stream.writeVInt(14);
@@ -428,11 +429,11 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0); // NPC? / Count?
     stream.writeVInt(0);
 
-    stream.writeVInt(0); // Diamonds
-    stream.writeVInt(0); // FreeDiamonds
+    stream.writeVInt(config.diamonds); // Diamonds
+    stream.writeVInt(config.diamonds); // FreeDiamonds
 
-    stream.writeVInt(0); // ExpPoints
-    stream.writeVInt(1); // ExpLevel
+    stream.writeVInt(config.xp); // ExpPoints
+    stream.writeVInt(config.level); // ExpLevel
 
     stream.writeVInt(0); // AvatarUserLevelTier
 

@@ -1,6 +1,7 @@
 import { Offsets } from "./offsets.js";
 import { PiranhaMessage } from "./piranhamessage.js";
 import {
+  assetManagerPtr,
   base,
   getColumnCount,
   getCSV,
@@ -8,6 +9,7 @@ import {
   getRowCount,
   getRowName,
   getTable,
+  setAssetManager,
 } from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
@@ -70,4 +72,10 @@ export function installHooks() {
       ["pointer", "pointer"],
     ),
   );
+
+  Interceptor.attach(base.add(Offsets.AAssetManagerOpen), {
+    onEnter(args) {
+      setAssetManager(args[0]);
+    },
+  });
 }

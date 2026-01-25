@@ -2,6 +2,7 @@ import { Offsets, setupOffsets } from "./offsets.js";
 import { isAndroid } from "./platform.js";
 import { getDocumentsDirectory, getPackageName } from "./util.js";
 import { version } from "version";
+import { Logger } from "./utility/logger.js";
 
 export let base = NULL;
 
@@ -61,6 +62,8 @@ export let getIntegerValueAt: NativeFunction<
   [NativePointerValue, number]
 >;
 
+export let assetManagerPtr: NativePointer;
+
 export function load() {
   setupOffsets();
   pkgName = getPackageName();
@@ -119,4 +122,8 @@ export function load() {
 
 export function setBase(ptr: NativePointer) {
   base = ptr;
+}
+
+export function setAssetManager(ptr: NativePointer) {
+  assetManagerPtr = ptr;
 }
