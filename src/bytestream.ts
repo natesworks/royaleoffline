@@ -1,4 +1,5 @@
 import { utf8ArrayToString, stringToUtf8Array } from "./util.js";
+import { Logger } from "./utility/logger.js";
 
 export class ByteStream {
   payload: number[];
@@ -8,15 +9,6 @@ export class ByteStream {
     this.payload = payload;
     this.bitoffset = 0;
     this.offset = 0;
-  }
-
-  readBytesLength(): number {
-    this.bitoffset = 0;
-    const b1 = this.payload[this.offset++];
-    const b2 = this.payload[this.offset++];
-    const b3 = this.payload[this.offset++];
-    const b4 = this.payload[this.offset++];
-    return ((b1 << 24) >>> 0) | (b2 << 16) | (b3 << 8) | b4;
   }
 
   readInt(): number {
@@ -52,22 +44,12 @@ export class ByteStream {
     return Number((BigInt(high) << 32n) | BigInt(low >>> 0));
   }
 
-  readString(maxCapacity: number = 9000000): string {
+  readString(): string {
     this.bitoffset = 0;
-    const length = this.readBytesLength();
-    if (length < 0 || length > maxCapacity) {
-      throw Error("invalid string length");
-    }
-    const bytes = this.payload.slice(this.offset, this.offset + length);
-    this.offset += length;
-    return utf8ArrayToString(new Uint8Array(bytes));
-  }
-
-  readStringReference(maxCapacity: number = 9000000): string {
-    this.bitoffset = 0;
-    const length = this.readBytesLength();
-    if (length < 0 || length > maxCapacity) {
-      return "";
+    const length = this.readInt();
+    if (length < 0 || length > 10000) {
+      Logger.error("Invalid string length");
+      throw Error();
     }
     const bytes = this.payload.slice(this.offset, this.offset + length);
     this.offset += length;
@@ -77,7 +59,7 @@ export class ByteStream {
   writeDataReference(classID: number, instanceID: number) {
     this.bitoffset = 0;
     this.writeVInt(classID);
-    if (classID != 0) this.writeVInt(instanceID);
+    if (classID > 0) this.writeVInt(instanceID);
   }
 
   readVInt(): number {
@@ -231,8 +213,9 @@ export class ByteStream {
 
     hex = hex.replace(/[\s-]/g, "");
 
-    if (hex.length % 2 !== 0) {
-      throw new Error("invalid hex length");
+    if (hex.length % 2 != 0) {
+      Logger.error("Invalid hex length");
+      throw new Error();
     }
 
     for (let i = 0; i < hex.length; i += 2) {
@@ -240,7 +223,8 @@ export class ByteStream {
       const byte = parseInt(byteStr, 16);
 
       if (isNaN(byte)) {
-        throw new Error(`invalid hex: ${byteStr}`);
+        Logger.error("Invalid hex length", byte);
+        throw new Error();
       }
 
       this.writeByte(byte);

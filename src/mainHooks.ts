@@ -31,16 +31,6 @@ export function installHooks() {
     },
   });
 
-  Interceptor.attach(base.add(0x1ff980), {
-    onEnter(retval) {
-      Interceptor.attach(base.add(0x2879be), {
-        onLeave(retval) {
-          Logger.error(retval.readU32());
-        },
-      });
-    },
-  });
-
   Interceptor.attach(base.add(Offsets.ServerConnectionUpdate), {
     onEnter(args) {
       let messaging = args[0]

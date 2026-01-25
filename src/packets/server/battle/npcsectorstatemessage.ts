@@ -76,31 +76,28 @@ export class NpcSectorStateMessage {
     stream.writeVLong(0, 1); // player id
     stream.writeByte(0);
 
-    // ConstantSizeIntArray
-    {
-      stream.writeVInt(1);
-      stream.writeVInt(0);
-      stream.writeVInt(0);
+    // ByteStreamHelper::readConstantSizeIntArray(a2, a1 + 0xC, 6);
+    stream.writeVInt(1);
+    stream.writeVInt(0);
+    stream.writeVInt(0);
+    stream.writeVInt(7);
+    stream.writeVInt(0);
+    stream.writeVInt(0);
 
-      stream.writeVInt(7);
-      stream.writeVInt(0);
-      stream.writeVInt(0);
-    }
+    stream.writeByte(0); // IsReplay / Type?
+    stream.writeByte(0); // IsEndConditionMatched
+    stream.writeByte(0);
 
-    stream.writeBoolean(false); // IsReplay / Type?
-    stream.writeBoolean(false); // IsEndConditionMatched
-    stream.writeBoolean(false);
+    stream.writeByte(1); // IsNpc
 
-    stream.writeBoolean(true); // IsNpc
+    stream.writeByte(0); // isBattleEndedWithTimeOut
+    stream.writeByte(0);
 
-    stream.writeBoolean(false); // isBattleEndedWithTimeOut
-    stream.writeBoolean(false);
+    stream.writeByte(0); // hasPlayerFinishedNpcLevel
+    stream.writeByte(0);
 
-    stream.writeBoolean(false); // hasPlayerFinishedNpcLevel
-    stream.writeBoolean(false);
-
-    stream.writeBoolean(false); // isInOvertime
-    stream.writeBoolean(false); // isTournamentMode
+    stream.writeByte(0); // isInOvertime
+    stream.writeByte(0); // isTournamentMode
 
     stream.writeVInt(0);
 

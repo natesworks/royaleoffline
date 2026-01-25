@@ -4,7 +4,6 @@ import {
   createMessageByType,
   messageManagerReceiveMessage,
   operator_new,
-  setSpells,
 } from "./definitions";
 import { PiranhaMessage } from "./piranhamessage";
 import { getMessageManagerInstance } from "./util";
@@ -29,16 +28,17 @@ export class Messaging {
         .add(Offsets.PayloadPtr)
         .writePointer(payloadPtr);
     }
+    Logger.debug("Decoding", id);
     let decodeOffset = message.readPointer().add(Offsets.Decode).readPointer();
     //Logger.debug("Decode function for type", id + ":", decodeOffset.sub(base));
     let decode = new NativeFunction(decodeOffset, "void", ["pointer"]);
     decode(message);
-    Logger.debug("Message decoded succesfully");
+    Logger.debug("Message", id, "decoded succesfully" + ", receiving");
     messageManagerReceiveMessage(
       base.add(Offsets.MessageManagerInstance).readPointer(),
       message,
     );
-    Logger.debug("Message received");
+    Logger.debug("Message", id, "received");
     return message;
   }
 
@@ -52,6 +52,11 @@ export class Messaging {
       }
       case 14104: {
         Messaging.sendOfflineMessage(21903, NpcSectorStateMessage.encode());
+        break;
+      }
+      // gohomefromofflinepractice
+      case 14101: {
+        Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
         break;
       }
     }
