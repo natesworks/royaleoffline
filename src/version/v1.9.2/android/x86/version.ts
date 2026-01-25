@@ -48,5 +48,6 @@ export const version = {
     GetRowAt: 0x3a8080,
     GetRowName: 0x3a6ff0,
     GetBooleanValueAt: 0x3a7110,
+    GetIntegerValueAt: 0x3a7160,
   },
 };

@@ -12,6 +12,7 @@ import { Logger } from "./utility/logger";
 import { LoginOkMessage } from "./packets/server/loginokmessage";
 import { ByteStream } from "./bytestream";
 import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
+import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -57,6 +58,12 @@ export class Messaging {
       // gohomefromofflinepractice
       case 14101: {
         Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
+        break;
+      }
+      // endclientturn
+      case 14102: {
+        let data = EndClientTurnMessage.decode(stream);
+        EndClientTurnMessage.execute(data);
         break;
       }
     }

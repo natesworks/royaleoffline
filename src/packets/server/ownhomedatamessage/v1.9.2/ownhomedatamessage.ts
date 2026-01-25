@@ -22,7 +22,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(3); // deck count
     for (let i = 0; i < 3; i++) {
       stream.writeVInt(8);
-      for (let x = 0; x < 8; x++) stream.writeVInt(characters[x]);
+      for (let x = 0; x < 8; x++) stream.writeVInt(characters[x].globalId);
     }
 
     for (let i = 0; i < 8; i++) {
@@ -30,7 +30,7 @@ export class OwnHomeDataMessage {
     }
 
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i]));
+      stream.writeVInt(GlobalID.getInstanceId(characters[i].globalId));
       stream.writeVInt(12); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
@@ -42,8 +42,8 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(characters.length - 8);
     for (let i = 0; i < characters.length - 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i + 8]));
-      stream.writeVInt(12); // level
+      stream.writeVInt(GlobalID.getInstanceId(characters[i + 8].globalId));
+      stream.writeVInt(characters[i + 8].powerLevel); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);

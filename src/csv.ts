@@ -1,6 +1,8 @@
+import { Character } from "./character";
 import {
   getBooleanValueAt,
   getCSV,
+  getIntegerValueAt,
   getRowAt,
   getRowCount,
   getRowName,
@@ -11,8 +13,8 @@ import { createStringObject } from "./util";
 import { Logger } from "./utility/logger";
 
 export class CSV {
-  static getSpells(): number[] {
-    let result: number[] = [];
+  static getSpells(): Character[] {
+    let result: Character[] = [];
     const csvs = [
       "csv_logic/spells_characters.csv",
       "csv_logic/spells_buildings.csv",
@@ -28,8 +30,15 @@ export class CSV {
       for (let i = 0; i < rowCount; i++) {
         let row = getRowAt(table, i);
         let isNotInUse = getBooleanValueAt(row, 6);
+        let powerLevel = getIntegerValueAt(row, 47);
+        Logger.debug(powerLevel);
         if (!isNotInUse) {
-          result.push(GlobalID.createGlobalId(classId, i + 1 + offset));
+          result.push(
+            new Character(
+              GlobalID.createGlobalId(classId, i + 1 + offset),
+              powerLevel,
+            ),
+          );
         }
       }
       offset += rowCount;
@@ -38,20 +47,20 @@ export class CSV {
     return result;
   }
 
-  static getCharacters() {
-    let result: number[] = [];
+  static getCharacters(): Character[] {
+    let result: Character[] = [];
     let spells = this.getSpells();
     spells.forEach((val) => {
-      if (GlobalID.getClassId(val) == 26) result.push(val);
+      if (GlobalID.getClassId(val.globalId) == 26) result.push(val);
     });
     return result;
   }
 
-  static getBuildings() {
-    let result: number[] = [];
+  static getBuildings(): Character[] {
+    let result: Character[] = [];
     let spells = this.getSpells();
     spells.forEach((val) => {
-      if (GlobalID.getClassId(val) == 27) result.push(val);
+      if (GlobalID.getClassId(val.globalId) == 27) result.push(val);
     });
     return result;
   }

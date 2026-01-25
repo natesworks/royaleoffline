@@ -36,7 +36,7 @@ export class NpcSectorStateMessage {
     stream.writeVInt(0);
     stream.writeVInt(0);
     stream.writeVInt(1);
-    stream.writeVInt(6400); // Trophies Trainer ??
+    stream.writeVInt(0); // Trophies Trainer ??
 
     for (let i = 0; i < 13; i++) stream.writeByte(0);
 
