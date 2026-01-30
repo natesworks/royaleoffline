@@ -16,6 +16,7 @@ import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { version } from "version";
 import { backtrace } from "./util.js";
+import { AssetManager } from "./utility/assetmanager.js";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
@@ -62,8 +63,7 @@ export function installHooks() {
       base.add(Offsets.CreateMessageByTypeLDRB),
       Process.pageSize,
       (code) => {
-        const pcWriter = new Arm64Writer(code);
-        pcWriter.putNop();
+        const pcWriter = new ThumbWriter(code);
         pcWriter.putBranchAddress(
           base.add(Offsets.CreateMessageByTypeJumpAddress),
         );
@@ -101,9 +101,14 @@ export function installHooks() {
     ),
   );
 
-  Interceptor.attach(base.add(Offsets.AAssetManagerOpen), {
-    onEnter(args) {
-      setAssetManager(args[0]);
+  const assetManagerHook = Interceptor.attach(
+    base.add(Offsets.AAssetManagerOpen),
+    {
+      onEnter(args) {
+        setAssetManager(args[0]);
+        //Logger.debug(AssetManager.readFromAssets("config.json"));
+        assetManagerHook.detach();
+      },
     },
-  });
+  );
 }

@@ -9,7 +9,7 @@ args.forEach((arg) => {
 });
 
 const gmv = argMap.gmv;
-let devicePath = argMap.device === "android" ? "android/x86" : "ios";
+let devicePath = argMap.device === "android" ? "android/arm" : "ios";
 
 esbuild
   .build({
@@ -44,4 +44,3 @@ esbuild
     ],
   })
   .catch(() => process.exit(1));
-
