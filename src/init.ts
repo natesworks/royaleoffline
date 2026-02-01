@@ -12,3 +12,4 @@ Logger.info("Powered by Frida");
 Logger.info("Running on", isAndroid ? "Android" : "iOS");
 Logger.verbose(`${library} loaded at: ${base}`);
 installHooks();
+Logger.info("Succesfully installed hooks");

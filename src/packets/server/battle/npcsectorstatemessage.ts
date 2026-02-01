@@ -1,6 +1,6 @@
 import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
-import { GlobalID } from "src/globalid";
+import { GlobalId } from "src/globalid";
 import { Logger } from "src/utility/logger";
 
 export class NpcSectorStateMessage {
@@ -22,7 +22,7 @@ export class NpcSectorStateMessage {
     stream.writeVInt(38); // Random
 
     // logicbattle
-    stream.writeDataReference(9, 4);
+    stream.writeDataReference(GlobalId.createGlobalId(9, 4));
 
     stream.writeVInt(7419667);
     stream.writeVInt(1);
@@ -104,13 +104,13 @@ export class NpcSectorStateMessage {
     stream.writeVInt(towers);
     stream.writeVInt(towers);
 
-    stream.writeDataReference(35, 1);
-    stream.writeDataReference(35, 1);
-    stream.writeDataReference(35, 1);
-    stream.writeDataReference(35, 1);
+    stream.writeDataReference(GlobalId.createGlobalId(35, 1));
+    stream.writeDataReference(GlobalId.createGlobalId(35, 1));
+    stream.writeDataReference(GlobalId.createGlobalId(35, 1));
+    stream.writeDataReference(GlobalId.createGlobalId(35, 1));
 
-    stream.writeDataReference(35, 0);
-    stream.writeDataReference(35, 0);
+    stream.writeDataReference(GlobalId.createGlobalId(35, 0));
+    stream.writeDataReference(GlobalId.createGlobalId(35, 0));
 
     // LogicGameObject::encodeComponent
     stream.writeVInt(1);
@@ -210,7 +210,7 @@ export class NpcSectorStateMessage {
     // Trainer
     stream.writeHex("FF01");
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i].globalId));
+      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
       stream.writeVInt(12);
     }
 
@@ -219,7 +219,7 @@ export class NpcSectorStateMessage {
     // Player
     stream.writeHex("FE03");
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i].globalId));
+      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
       stream.writeVInt(12);
     }
 

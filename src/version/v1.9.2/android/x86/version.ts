@@ -23,6 +23,8 @@ export const version = {
     State: 4,
     HasConnectFailed: 104,
 
+    Messaging: 4,
+
     GetMessageType: 20,
     Destruct: 24,
     Encode: 8,
@@ -51,5 +53,8 @@ export const version = {
     GetIntegerValueAt: 0x3a7160,
 
     AAssetManagerOpen: 0x5a140,
+
+    SendKeepAliveMessage: 0xbe056,
+    ShowBadConnection: 0xa8fe2,
   },
 };

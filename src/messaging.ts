@@ -66,6 +66,11 @@ export class Messaging {
         EndClientTurnMessage.execute(data);
         break;
       }
+      // keepalive
+      case 10108: {
+        Messaging.sendOfflineMessage(20108, []);
+        break;
+      }
     }
   }
 }

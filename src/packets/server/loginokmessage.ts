@@ -25,9 +25,9 @@ export class LoginOkMessage {
     stream.writeString("DE");
     stream.writeString("Berlin");
 
-    stream.writeString("https://game-assets.clashroyaleapp.com");
-    stream.writeString("https://game-assets.clashroyaleapp.com/");
-    stream.writeString("https://event-assets.clashroyale.com");
+    stream.writeString("");
+    stream.writeString("");
+    stream.writeString("");
 
     return stream.payload;
   }

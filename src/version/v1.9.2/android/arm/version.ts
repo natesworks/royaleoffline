@@ -23,6 +23,8 @@ export const version = {
     State: 4,
     HasConnectFailed: 104,
 
+    Messaging: 4,
+
     GetMessageType: 20,
     Destruct: 24,
     Encode: 8,

@@ -1,6 +1,6 @@
 import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
-import { GlobalID } from "src/globalid";
+import { GlobalId } from "src/globalid";
 import { AssetManager } from "src/utility/assetmanager";
 import { Logger } from "src/utility/logger";
 
@@ -32,7 +32,7 @@ export class OwnHomeDataMessage {
     }
 
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i].globalId));
+      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
       stream.writeVInt(12); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
@@ -44,7 +44,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(characters.length - 8);
     for (let i = 0; i < characters.length - 8; i++) {
-      stream.writeVInt(GlobalID.getInstanceId(characters[i + 8].globalId));
+      stream.writeVInt(GlobalId.getInstanceId(characters[i + 8].globalId));
       stream.writeVInt(characters[i + 8].powerLevel); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
@@ -71,7 +71,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(8);
 
     stream.writeVInt(0);
-    stream.writeVInt(1609462800);
+    stream.writeVInt(-1); // timestamp when event ends; when negative it doesn't show
     stream.writeVInt(0);
 
     stream.writeVInt(0);
@@ -85,7 +85,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
 
     stream.writeString("2v2 Button");
-    stream.writeString('{"HideTimer":false,"HidePopupTimer":false}"');
+    stream.writeString('{"HideTimer":true,"HidePopupTimer":false}"');
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -162,7 +162,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(2);
     stream.writeVInt(config.level); // xp level
 
-    stream.writeDataReference(54, 0);
+    stream.writeDataReference(GlobalId.createGlobalId(54, 0));
 
     //shop
     stream.writeVInt(1); // shop day

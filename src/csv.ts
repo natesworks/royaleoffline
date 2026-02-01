@@ -8,7 +8,7 @@ import {
   getRowName,
   getTable,
 } from "./definitions";
-import { GlobalID } from "./globalid";
+import { GlobalId } from "./globalid";
 import { createStringObject } from "./util";
 import { Logger } from "./utility/logger";
 
@@ -34,7 +34,7 @@ export class CSV {
         if (!isNotInUse) {
           result.push(
             new Character(
-              GlobalID.createGlobalId(classId, i + 1 + offset),
+              GlobalId.createGlobalId(classId, i + 1 + offset),
               powerLevel,
             ),
           );
@@ -50,7 +50,7 @@ export class CSV {
     let result: Character[] = [];
     let spells = this.getSpells();
     spells.forEach((val) => {
-      if (GlobalID.getClassId(val.globalId) == 26) result.push(val);
+      if (GlobalId.getClassId(val.globalId) == 26) result.push(val);
     });
     return result;
   }
@@ -59,7 +59,7 @@ export class CSV {
     let result: Character[] = [];
     let spells = this.getSpells();
     spells.forEach((val) => {
-      if (GlobalID.getClassId(val.globalId) == 27) result.push(val);
+      if (GlobalId.getClassId(val.globalId) == 27) result.push(val);
     });
     return result;
   }

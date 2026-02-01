@@ -1,4 +1,4 @@
-export class GlobalID {
+export class GlobalId {
   static createGlobalId(classId: number, instanceId: number): number {
     return classId <= 0 ? 1000000 + instanceId : classId * 1000000 + instanceId;
   }

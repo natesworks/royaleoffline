@@ -1,30 +1,21 @@
 import { Offsets } from "./offsets.js";
 import { PiranhaMessage } from "./piranhamessage.js";
-import {
-  assetManagerPtr,
-  base,
-  getColumnCount,
-  getCSV,
-  getRowAt,
-  getRowCount,
-  getRowName,
-  getTable,
-  setAssetManager,
-} from "./definitions.js";
+import { base, getCSV, setAssetManager } from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { version } from "version";
 import { backtrace } from "./util.js";
-import { AssetManager } from "./utility/assetmanager.js";
 
 export function installHooks() {
+  /*
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
     onEnter(args) {
       let text = args[0].readUtf8String();
       Logger.warn(text);
     },
   });
+  */
 
   Interceptor.attach(base.add(Offsets.DebuggerError), {
     onEnter(args) {
@@ -72,6 +63,14 @@ export function installHooks() {
     );
   }
 
+  Interceptor.attach(base.add(Offsets.SendMessage), {
+    onEnter(args) {
+      PiranhaMessage.encode(args[1]);
+      let messaging = args[0].add(Offsets.Messaging).readPointer();
+      messaging.add(Offsets.State).writeInt(5);
+    },
+  });
+
   Interceptor.replace(
     base.add(Offsets.Send),
     new NativeCallback(
@@ -79,17 +78,19 @@ export function installHooks() {
         let type = PiranhaMessage.getMessageType(message);
         let length = PiranhaMessage.getEncodingLength(message);
 
-        if (type === 10108) return 0;
         Logger.info("Recieved message of type:", type);
         Logger.verbose("Length:", length);
+
         let payloadPtr = PiranhaMessage.getByteStream(message)
           .add(Offsets.PayloadPtr)
           .readPointer();
         let payload = payloadPtr.readByteArray(length);
-        if (payload !== null) {
+        if (payload !== null && length > 0) {
           let stream = new ByteStream(Array.from(new Uint8Array(payload)));
           Logger.debug("Stream dump:", payload);
           Messaging.handleMessage(type, stream);
+        } else {
+          Messaging.handleMessage(type, new ByteStream([]));
         }
 
         PiranhaMessage.destroyMessage(message);
@@ -110,5 +111,15 @@ export function installHooks() {
         assetManagerHook.detach();
       },
     },
+  );
+
+  Interceptor.replace(
+    base.add(Offsets.SendKeepAliveMessage),
+    new NativeCallback(function () {}, "void", []),
+  );
+
+  Interceptor.replace(
+    base.add(Offsets.ShowBadConnection),
+    new NativeCallback(function () {}, "void", []),
   );
 }

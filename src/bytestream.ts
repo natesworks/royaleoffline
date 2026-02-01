@@ -1,3 +1,4 @@
+import { GlobalId } from "./globalid.js";
 import { utf8ArrayToString, stringToUtf8Array } from "./util.js";
 import { Logger } from "./utility/logger.js";
 
@@ -56,10 +57,13 @@ export class ByteStream {
     return utf8ArrayToString(new Uint8Array(bytes));
   }
 
-  writeDataReference(classID: number, instanceID: number) {
+  writeDataReference(val: number) {
     this.bitoffset = 0;
-    this.writeVInt(classID);
-    if (classID > 0) this.writeVInt(instanceID);
+    let classId = GlobalId.getClassId(val);
+    let instanceId = GlobalId.getInstanceId(val);
+
+    this.writeVInt(classId);
+    if (classId > 0) this.writeVInt(instanceId);
   }
 
   readVInt(): number {
@@ -124,13 +128,13 @@ export class ByteStream {
     return this.payload[this.offset++] !== 0;
   }
 
-  readDataReference(): any {
-    const high = this.readVInt();
-    if (high === 0) {
-      return { high: 0, low: 0 };
+  readDataReference(): number {
+    const classId = this.readVInt();
+    if (classId === 0) {
+      return 0;
     }
-    const low = this.readVInt();
-    return { high: high, low: low };
+    const instanceId = this.readVInt();
+    return GlobalId.createGlobalId(classId, instanceId);
   }
 
   writeByte(value: number) {
