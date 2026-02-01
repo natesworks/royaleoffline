@@ -49,9 +49,13 @@ export const version = {
     GetRowCount: 0x25f179,
     GetRowAt: 0x25f01d,
     GetRowName: 0x25e7c1,
+    GetValueAt: 0x25ee40,
     GetBooleanValueAt: 0x25e845,
     GetIntegerValueAt: 0x25e875,
 
     AAssetManagerOpen: 0x5ad1c,
+
+    SendKeepAliveMessage: 0x9d01c,
+    ShowBadConnection: 0x8eb38,
   },
 };
