@@ -33,7 +33,7 @@ export class OwnHomeDataMessage {
 
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(12); // level
+      stream.writeVInt(characters[i].powerLevel - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);
@@ -45,7 +45,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(characters.length - 8);
     for (let i = 0; i < characters.length - 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i + 8].globalId));
-      stream.writeVInt(characters[i + 8].powerLevel); // level
+      stream.writeVInt(characters[i + 8].powerLevel - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);
@@ -299,8 +299,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
     stream.writeVInt(0);
 
-    stream.writeVInt(1); // New Arenas Seen Count
-    stream.writeVInt(54000010);
+    stream.writeVInt(0); // New Arenas Seen Count
 
     stream.writeVInt(0); // Session Reward = 2
     stream.writeVInt(0);
@@ -375,7 +374,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(13);
-    stream.writeVInt(config.gold); // New Gold
+    stream.writeVInt(0); // New Gold
 
     stream.writeVInt(5);
     stream.writeVInt(14);

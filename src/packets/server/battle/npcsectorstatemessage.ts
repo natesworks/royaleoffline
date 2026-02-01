@@ -15,7 +15,7 @@ export class NpcSectorStateMessage {
 
     stream.writeVInt(0); // Time
     stream.writeVInt(0); // Checksum
-    stream.writeVInt(0); // Timestamp
+    stream.writeVInt(Date.now()); // Timestamp
     stream.writeVInt(11);
 
     stream.writeVInt(0); // Time
@@ -36,7 +36,7 @@ export class NpcSectorStateMessage {
     stream.writeVInt(0);
     stream.writeVInt(0);
     stream.writeVInt(1);
-    stream.writeVInt(0); // Trophies Trainer ??
+    stream.writeVInt(0);
 
     for (let i = 0; i < 13; i++) stream.writeByte(0);
 
@@ -46,17 +46,7 @@ export class NpcSectorStateMessage {
 
     stream.writeVInt(10);
 
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
-    stream.writeVInt(0);
+    for (let i = 0; i < 11; i++) stream.writeVInt(0);
 
     stream.writeVInt(1);
     stream.writeVInt(2);
@@ -211,7 +201,7 @@ export class NpcSectorStateMessage {
     stream.writeHex("FF01");
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(12);
+      stream.writeVInt(characters[i].powerLevel - 1);
     }
 
     stream.writeByte(0);
@@ -220,7 +210,7 @@ export class NpcSectorStateMessage {
     stream.writeHex("FE03");
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(12);
+      stream.writeVInt(characters[i].powerLevel - 1);
     }
 
     stream.writeVInt(0);

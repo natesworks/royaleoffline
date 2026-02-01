@@ -8,14 +8,12 @@ import { version } from "version";
 import { backtrace } from "./util.js";
 
 export function installHooks() {
-  /*
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
     onEnter(args) {
       let text = args[0].readUtf8String();
       Logger.warn(text);
     },
   });
-  */
 
   Interceptor.attach(base.add(Offsets.DebuggerError), {
     onEnter(args) {
