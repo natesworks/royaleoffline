@@ -142,12 +142,21 @@ export function waitForModule(
   });
 }
 
-export function decodeString(src: NativePointer): string | null {
+function _decodeString(src: NativePointer): string | null {
   let len = src.add(4).readInt();
   if (len >= 8) {
     return src.add(8).readPointer().readUtf8String(len);
   }
   return src.add(8).readUtf8String(len);
+}
+
+export function decodeString(src: NativePointer): string {
+  let res = _decodeString(src);
+  if (!res) {
+    Logger.error("Failed to decode string");
+    throw new Error();
+  }
+  return res;
 }
 
 export function createStringObject(text: string) {

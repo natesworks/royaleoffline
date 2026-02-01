@@ -1,9 +1,9 @@
 export class Character {
   globalId;
-  powerLevel;
+  level;
 
-  constructor(globalId: number, powerLevel: number) {
+  constructor(globalId: number, level: number) {
     this.globalId = globalId;
-    this.powerLevel = powerLevel;
+    this.level = level;
   }
 }

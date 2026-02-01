@@ -33,7 +33,7 @@ export class OwnHomeDataMessage {
 
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].powerLevel - 1); // level
+      stream.writeVInt(characters[i].level - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);
@@ -45,7 +45,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(characters.length - 8);
     for (let i = 0; i < characters.length - 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i + 8].globalId));
-      stream.writeVInt(characters[i + 8].powerLevel - 1); // level
+      stream.writeVInt(characters[i + 8].level - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);

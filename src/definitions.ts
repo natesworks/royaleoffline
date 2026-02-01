@@ -53,6 +53,10 @@ export let getRowAt: NativeFunction<
   NativePointer,
   [NativePointerValue, number]
 >;
+export let getValueAt: NativeFunction<
+  NativePointer,
+  [NativePointerValue, number, number]
+>;
 export let getBooleanValueAt: NativeFunction<
   number,
   [NativePointerValue, number]
@@ -103,6 +107,11 @@ export function load() {
   ]);
   getRowAt = new NativeFunction(base.add(Offsets.GetRowAt), "pointer", [
     "pointer",
+    "int",
+  ]);
+  getValueAt = new NativeFunction(base.add(Offsets.GetValueAt), "pointer", [
+    "pointer",
+    "int",
     "int",
   ]);
   getRowName = new NativeFunction(base.add(Offsets.GetRowName), "pointer", [

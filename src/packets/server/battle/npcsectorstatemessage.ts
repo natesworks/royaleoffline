@@ -201,7 +201,7 @@ export class NpcSectorStateMessage {
     stream.writeHex("FF01");
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].powerLevel - 1);
+      stream.writeVInt(characters[i].level - 1);
     }
 
     stream.writeByte(0);
@@ -210,7 +210,7 @@ export class NpcSectorStateMessage {
     stream.writeHex("FE03");
     for (let i = 0; i < 8; i++) {
       stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].powerLevel - 1);
+      stream.writeVInt(characters[i].level - 1);
     }
 
     stream.writeVInt(0);
