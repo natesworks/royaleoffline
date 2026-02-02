@@ -68,6 +68,10 @@ export let getIntegerValueAt: NativeFunction<
 
 export let assetManagerPtr: NativePointer;
 
+export let startTrainingCampMatch:
+  | NativeFunction<void, [NativePointerValue]>
+  | ((arg0: any) => void);
+
 export function load() {
   setupOffsets();
   pkgName = getPackageName();
@@ -126,6 +130,12 @@ export function load() {
     base.add(Offsets.GetIntegerValueAt),
     "int",
     ["pointer", "int"],
+  );
+
+  startTrainingCampMatch = new NativeFunction(
+    base.add(Offsets.StartTrainingCampMatch),
+    "void",
+    ["pointer"],
   );
 }
 

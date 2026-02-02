@@ -1,6 +1,11 @@
 import { Offsets } from "./offsets.js";
 import { PiranhaMessage } from "./piranhamessage.js";
-import { base, getCSV, setAssetManager } from "./definitions.js";
+import {
+  base,
+  getCSV,
+  setAssetManager,
+  startTrainingCampMatch,
+} from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
@@ -8,14 +13,12 @@ import { version } from "version";
 import { backtrace } from "./util.js";
 
 export function installHooks() {
-  /*
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
     onEnter(args) {
       let text = args[0].readUtf8String();
       Logger.warn(text);
     },
   });
-  */
 
   Interceptor.attach(base.add(Offsets.DebuggerError), {
     onEnter(args) {
@@ -121,5 +124,16 @@ export function installHooks() {
   Interceptor.replace(
     base.add(Offsets.ShowBadConnection),
     new NativeCallback(function () {}, "void", []),
+  );
+
+  Interceptor.replace(
+    base.add(Offsets.StartBattle),
+    new NativeCallback(
+      function (a1: NativePointer) {
+        startTrainingCampMatch(a1);
+      },
+      "void",
+      ["pointer"],
+    ),
   );
 }

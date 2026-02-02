@@ -57,5 +57,8 @@ export const version = {
 
     SendKeepAliveMessage: 0xbe056,
     ShowBadConnection: 0xa8fe2,
+
+    StartTrainingCampMatch: 0x1caeca,
+    StartBattle: 0x1c79b0,
   },
 };
