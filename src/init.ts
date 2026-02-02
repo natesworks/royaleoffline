@@ -4,12 +4,9 @@ import { Offsets } from "./offsets.js";
 import { isAndroid } from "./platform.js";
 import { Logger } from "./utility/logger.js";
 
+Logger.info("Clash Royale Offline created by Natesworks");
 let library = isAndroid ? "libg.so" : "laser";
 setBase(Process.getModuleByName(library).base);
 load();
-Logger.info("Clash Royale Offline created by Natesworks");
-Logger.info("Powered by Frida");
-Logger.info("Running on", isAndroid ? "Android" : "iOS");
-Logger.verbose(`${library} loaded at: ${base}`);
 installHooks();
 Logger.info("Succesfully installed hooks");

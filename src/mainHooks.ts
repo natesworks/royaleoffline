@@ -104,17 +104,6 @@ export function installHooks() {
     ),
   );
 
-  const assetManagerHook = Interceptor.attach(
-    base.add(Offsets.AAssetManagerOpen),
-    {
-      onEnter(args) {
-        setAssetManager(args[0]);
-        //Logger.debug(AssetManager.readFromAssets("config.json"));
-        assetManagerHook.detach();
-      },
-    },
-  );
-
   Interceptor.replace(
     base.add(Offsets.SendKeepAliveMessage),
     new NativeCallback(function () {}, "void", []),

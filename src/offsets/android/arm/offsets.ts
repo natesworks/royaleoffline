@@ -41,12 +41,16 @@ export const offsets = {
   GetRowCount: 0x25f179,
   GetRowAt: 0x25f01d,
   GetRowName: 0x25e7c1,
-  GetValueAt: 0x25ee40,
+  GetValueAt: 0x25ee41,
   GetBooleanValueAt: 0x25e845,
   GetIntegerValueAt: 0x25e875,
 
-  AAssetManagerOpen: 0x5ad1c,
+  AAssetManager: 0x5a1d78,
 
-  SendKeepAliveMessage: 0x9d01c,
-  ShowBadConnection: 0x8eb38
-}
+  SendKeepAliveMessage: 0x9d01d,
+  ShowBadConnection: 0x8eb39,
+
+  StartBattle: 0x14d851,
+  StartTrainingCampMatch: 0x14fef1,
+};
+

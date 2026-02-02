@@ -45,7 +45,7 @@ export const offsets = {
   GetBooleanValueAt: 0x3a7110,
   GetIntegerValueAt: 0x3a7160,
 
-  AAssetManagerOpen: 0x5a140,
+  AAssetManager: 0x8b2b98,
 
   SendKeepAliveMessage: 0xbe056,
   ShowBadConnection: 0xa8fe2,

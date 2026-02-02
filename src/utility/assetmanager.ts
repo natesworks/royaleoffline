@@ -1,6 +1,6 @@
 // gud <3
 
-import { assetManagerPtr, base } from "src/definitions";
+import { base } from "src/definitions";
 import { Offsets } from "src/offsets";
 import { Logger } from "./logger";
 
@@ -33,7 +33,11 @@ export class AssetManager {
     );
 
     const filename = Memory.allocUtf8String(assetName);
-    const asset = AAssetManager_open(assetManagerPtr, filename, 2);
+    const asset = AAssetManager_open(
+      base.add(Offsets.AAssetManager).readPointer(),
+      filename,
+      2,
+    );
 
     if (asset.isNull()) {
       Logger.error("Asset is NULL");
