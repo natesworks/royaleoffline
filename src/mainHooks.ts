@@ -9,7 +9,6 @@ import {
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
-import { version } from "version";
 import { backtrace } from "./util.js";
 
 export function installHooks() {

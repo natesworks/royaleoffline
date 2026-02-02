@@ -7,3 +7,6 @@ An offline version of Clash Royale v1.9.2 made by Natesworks.
 - Training
 - Configuration
 - Automatically unlock characters from the games CSVs
+
+[Telegram](https://t.me/royaleoffline)\
+[Discord](https://discord.natesworks.com)

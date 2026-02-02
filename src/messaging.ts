@@ -6,10 +6,9 @@ import {
   operator_new,
 } from "./definitions";
 import { PiranhaMessage } from "./piranhamessage";
-import { getMessageManagerInstance } from "./util";
-import { OwnHomeDataMessage } from "OwnHomeDataMessage";
 import { Logger } from "./utility/logger";
 import { LoginOkMessage } from "./packets/server/loginokmessage";
+import { OwnHomeDataMessage } from "./packets/server/ownhomedatamessage";
 import { ByteStream } from "./bytestream";
 import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
 import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
@@ -64,11 +63,6 @@ export class Messaging {
       case 14102: {
         let data = EndClientTurnMessage.decode(stream);
         EndClientTurnMessage.execute(data);
-        break;
-      }
-      // keepalive
-      case 10108: {
-        Messaging.sendOfflineMessage(20108, []);
         break;
       }
     }

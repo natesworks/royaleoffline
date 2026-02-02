@@ -8,8 +8,8 @@ args.forEach((arg) => {
   argMap[key.replace(/^--/, "")] = value;
 });
 
-const gmv = argMap.gmv;
-let devicePath = argMap.device === "android" ? "android/x86" : "ios";
+const arch = argMap.arch;
+let devicePath = argMap.device == "android" ? "android/" + arch : "ios";
 
 esbuild
   .build({
@@ -20,21 +20,11 @@ esbuild
       {
         name: "get-correct-ver",
         setup(build) {
-          build.onResolve({ filter: /^version$/ }, (args) => {
+          build.onResolve({ filter: /^offsets$/ }, (args) => {
             return {
               path: path.resolve(
                 __dirname,
-                `src/version/v${gmv}/${devicePath}/version.ts`,
-              ),
-              namespace: "file",
-            };
-          });
-
-          build.onResolve({ filter: /^OwnHomeDataMessage$/ }, (args) => {
-            return {
-              path: path.resolve(
-                __dirname,
-                `src/packets/server/ownhomedatamessage/v${gmv}/ownhomedatamessage.ts`,
+                `src/offsets/${devicePath}/offsets.ts`,
               ),
               namespace: "file",
             };
