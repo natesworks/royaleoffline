@@ -72,6 +72,14 @@ export let startTrainingCampMatch:
   | NativeFunction<void, [NativePointerValue]>
   | ((arg0: any) => void);
 
+export let loadAsset: NativeFunction<void, [NativePointerValue]>;
+export let getJSONObject: NativeFunction<NativePointer, [NativePointerValue]>;
+export let getJSONNumber: NativeFunction<
+  NativePointer,
+  [NativePointerValue, NativePointerValue]
+>;
+export let getIntValue: NativeFunction<number, [NativePointerValue]>;
+
 export function load() {
   setupOffsets();
   pkgName = getPackageName();
@@ -137,6 +145,23 @@ export function load() {
     "void",
     ["pointer"],
   );
+
+  loadAsset = new NativeFunction(base.add(Offsets.LoadAsset), "void", [
+    "pointer",
+  ]);
+  getJSONObject = new NativeFunction(
+    base.add(Offsets.GetJSONObject),
+    "pointer",
+    ["pointer"],
+  );
+  getJSONNumber = new NativeFunction(
+    base.add(Offsets.GetJSONNumber),
+    "pointer",
+    ["pointer", "pointer"],
+  );
+  getIntValue = new NativeFunction(base.add(Offsets.GetIntValue), "int", [
+    "pointer",
+  ]);
 }
 
 export function setBase(ptr: NativePointer) {

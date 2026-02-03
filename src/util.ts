@@ -159,6 +159,7 @@ export function decodeString(src: NativePointer): string {
   return res;
 }
 
+// TODO: don't leak memory
 export function createStringObject(text: string) {
   let ptr = malloc(128);
   stringCtor(ptr, Memory.allocUtf8String(text));

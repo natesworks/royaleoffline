@@ -51,19 +51,19 @@ export class Logger {
   static error(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [ERROR] ${msg}`;
-    console.log(line);
+    console.error(line);
   }
 
   static warn(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [WARN] ${msg}`;
-    console.log(line);
+    console.warn(line);
   }
 
   static info(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [INFO] ${msg}`;
-    console.log(line);
+    console.info(line);
   }
 
   static debug(...args: any[]): void {

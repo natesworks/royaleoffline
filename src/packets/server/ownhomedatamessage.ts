@@ -1,14 +1,14 @@
 import { ByteStream } from "src/bytestream";
+import { ConfigHelper } from "src/config";
 import { CSV } from "src/csv";
 import { GlobalId } from "src/globalid";
 import { AssetManager } from "src/utility/assetmanager";
-import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
     let stream = new ByteStream([]);
     const characters = CSV.getSpells();
-    const config = JSON.parse(AssetManager.readFromAssets("config.json"));
+    const config = ConfigHelper.readConfig();
 
     // LogicClientHome
     stream.writeLong(0, 1); // player id

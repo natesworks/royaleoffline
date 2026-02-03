@@ -52,5 +52,9 @@ export const offsets = {
 
   StartBattle: 0x14d851,
   StartTrainingCampMatch: 0x14fef1,
-};
 
+  LoadAsset: 0x6b60d,
+  GetJSONObject: 0x2278f5,
+  GetJSONNumber: 0x262225,
+  GetIntValue: 0x261ded,
+};
