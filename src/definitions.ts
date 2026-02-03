@@ -1,7 +1,6 @@
-import { Offsets, setupOffsets } from "./offsets.js";
+import { Offsets } from "./offsets.js";
 import { isAndroid } from "./platform.js";
 import { getDocumentsDirectory, getPackageName } from "./util.js";
-import { version } from "version";
 import { Logger } from "./utility/logger.js";
 
 export let base = NULL;
@@ -81,7 +80,6 @@ export let getJSONNumber: NativeFunction<
 export let getIntValue: NativeFunction<number, [NativePointerValue]>;
 
 export function load() {
-  setupOffsets();
   pkgName = getPackageName();
   documentsDirectory = getDocumentsDirectory();
 
