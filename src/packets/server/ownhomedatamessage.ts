@@ -36,8 +36,9 @@ export class OwnHomeDataMessage {
       stream.writeBoolean(true);
     }
 
+    const currentDeck = decks.decks[decks.selected];
     for (let i = 0; i < 8; i++) {
-      const character = characters[i];
+      const character = currentDeck.characters[i];
       stream.writeVInt(character.cardId);
       stream.writeVInt(character.level - 1); // level
       stream.writeVInt(0);
@@ -48,9 +49,9 @@ export class OwnHomeDataMessage {
       stream.writeBoolean(false);
     }
 
-    stream.writeVInt(characters.length - 8);
-    for (let i = 0; i < characters.length - 8; i++) {
-      const character = characters[i + 8];
+    stream.writeVInt(characters.length);
+    for (let i = 0; i < characters.length; i++) {
+      const character = characters[i];
       stream.writeVInt(character.cardId);
       stream.writeVInt(character.level - 1); // level
       stream.writeVInt(0);

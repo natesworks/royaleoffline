@@ -28,17 +28,17 @@ export class LogicSwapSpellsCommand {
   static execute(data: LogicSwapSpellsCommandData) {
     let spells = CSV.getSpells();
 
-    let sourceIndex = data.cardOffset + 8;
-    let deckIndex = data.deckOffset;
-
     let selectedDeck = decks.decks[decks.selected];
 
-    selectedDeck.characters[deckIndex].cardId = spells[sourceIndex].cardId;
-    selectedDeck.characters[deckIndex].globalId = spells[sourceIndex].globalId;
-    selectedDeck.characters[deckIndex].level = spells[sourceIndex].level;
+    selectedDeck.characters[data.deckOffset].cardId =
+      spells[data.cardOffset].cardId;
+    selectedDeck.characters[data.deckOffset].globalId =
+      spells[data.cardOffset].globalId;
+    selectedDeck.characters[data.deckOffset].level =
+      spells[data.cardOffset].level;
 
-    let old = spells[deckIndex];
-    spells[deckIndex] = spells[sourceIndex];
+    let old = spells[data.deckOffset];
+    spells[data.deckOffset] = spells[sourceIndex];
     spells[sourceIndex] = old;
 
     DeckHelper.writeDecks(decks);
