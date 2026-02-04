@@ -1,5 +1,6 @@
 import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
+import { decks } from "src/definitions";
 import { GlobalId } from "src/globalid";
 import { Logger } from "src/utility/logger";
 
@@ -200,8 +201,9 @@ export class NpcSectorStateMessage {
     // Trainer
     stream.writeHex("FF01");
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].level - 1);
+      const character = characters[i];
+      stream.writeVInt(character.cardId);
+      stream.writeVInt(character.level - 1);
     }
 
     stream.writeByte(0);
@@ -209,8 +211,9 @@ export class NpcSectorStateMessage {
     // Player
     stream.writeHex("FE03");
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].level - 1);
+      const character = decks.decks[decks.selected].characters[i];
+      stream.writeVInt(character.cardId);
+      stream.writeVInt(0);
     }
 
     stream.writeVInt(0);

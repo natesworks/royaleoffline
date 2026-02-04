@@ -2,8 +2,10 @@ import { Offsets } from "./offsets";
 import {
   base,
   createMessageByType,
+  decks,
   messageManagerReceiveMessage,
   operator_new,
+  setDecks,
 } from "./definitions";
 import { PiranhaMessage } from "./piranhamessage";
 import { Logger } from "./utility/logger";
@@ -12,6 +14,7 @@ import { OwnHomeDataMessage } from "./packets/server/ownhomedatamessage";
 import { ByteStream } from "./bytestream";
 import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
 import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
+import { DeckHelper } from "./deck";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -46,6 +49,7 @@ export class Messaging {
     switch (id) {
       // LoginMessage
       case 10101: {
+        setDecks(DeckHelper.readDecks());
         Messaging.sendOfflineMessage(20104, LoginOkMessage.encode());
         Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
         break;

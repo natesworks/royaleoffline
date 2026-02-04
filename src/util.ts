@@ -1,7 +1,14 @@
-import { base, malloc, mkdir, pkgName, stringCtor } from "./definitions.js";
-import { Offsets } from "./offsets.js";
-import { isAndroid } from "./platform.js";
-import { Logger } from "./utility/logger.js";
+import {
+  base,
+  malloc,
+  mkdir,
+  pkgName,
+  stringCtor,
+  getuid,
+} from "./definitions";
+import { Offsets } from "./offsets";
+import { isAndroid } from "./platform";
+import { Logger } from "./utility/logger";
 
 const read = new NativeFunction(
   Process.getModuleByName(
@@ -40,39 +47,12 @@ export function getMessageManagerInstance(): NativePointer {
 }
 
 export function getDocumentsDirectory(): string {
-  if (!isAndroid) {
-    var NSFileManager = ObjC.classes.NSFileManager;
-    var fm = NSFileManager.defaultManager();
+  const uid = getuid();
+  const userId = Math.floor(uid / 100000);
 
-    let docsPath = fm
-      .URLsForDirectory_inDomains_(9, 1)
-      .objectAtIndex_(0)
-      .path()
-      .toString();
-    return docsPath;
-  } else {
-    let path = `/storage/emulated/0/Android/media/${pkgName}`;
-    mkdir(Memory.allocUtf8String(path), 777);
-    return path;
-  }
-}
-
-export function getDefaultConfigIOS(): string {
-  var NSBundle = ObjC.classes.NSBundle,
-    NSString = ObjC.classes.NSString,
-    NSData = ObjC.classes.NSData,
-    NSFileManager = ObjC.classes.NSFileManager;
-  var path = NSBundle.mainBundle().bundlePath().toString() + "/config.json";
-  if (
-    !NSFileManager.defaultManager().fileExistsAtPath_(
-      NSString.stringWithString_(path),
-    )
-  ) {
-    throw new Error("Default config missing");
-  }
-  var data = NSData.dataWithContentsOfFile_(NSString.stringWithString_(path));
-  var str = NSString.alloc().initWithData_encoding_(data, 4);
-  return str.toString();
+  let path = `/storage/emulated/${userId}/Android/media/${pkgName}`;
+  mkdir(Memory.allocUtf8String(path), 777);
+  return path;
 }
 
 // cant use TextEncoder or TextDecoder in frida so skidded this thing
@@ -125,21 +105,6 @@ export function stringToUtf8Array(str: string): Uint8Array {
     }
   }
   return new Uint8Array(utf8);
-}
-
-export function waitForModule(
-  name: string,
-  intervalMs = 10,
-): Promise<NativePointer> {
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      const handle = Process.getModuleByName(name).base;
-      if (handle) {
-        clearInterval(interval);
-        resolve(handle);
-      }
-    }, intervalMs);
-  });
 }
 
 function _decodeString(src: NativePointer): string | null {

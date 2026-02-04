@@ -1,8 +1,9 @@
 import { ByteStream } from "src/bytestream";
 import { ConfigHelper } from "src/config";
 import { CSV } from "src/csv";
+import { decks } from "src/definitions";
 import { GlobalId } from "src/globalid";
-import { AssetManager } from "src/utility/assetmanager";
+import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
@@ -21,10 +22,14 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0); // last login timestamp
 
-    stream.writeVInt(3); // deck count
-    for (let i = 0; i < 3; i++) {
+    stream.writeVInt(decks.decks.length); // deck count
+    for (let i = 0; i < decks.decks.length; i++) {
+      let deck = decks.decks[i];
       stream.writeVInt(8);
-      for (let x = 0; x < 8; x++) stream.writeVInt(characters[x].globalId);
+      for (let j = 0; j < 8; j++) {
+        let character = deck.characters[j];
+        stream.writeVInt(character.globalId);
+      }
     }
 
     for (let i = 0; i < 8; i++) {
@@ -32,8 +37,9 @@ export class OwnHomeDataMessage {
     }
 
     for (let i = 0; i < 8; i++) {
-      stream.writeVInt(GlobalId.getInstanceId(characters[i].globalId));
-      stream.writeVInt(characters[i].level - 1); // level
+      const character = characters[i];
+      stream.writeVInt(character.cardId);
+      stream.writeVInt(character.level - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);
@@ -44,8 +50,9 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(characters.length - 8);
     for (let i = 0; i < characters.length - 8; i++) {
-      stream.writeVInt(GlobalId.getInstanceId(characters[i + 8].globalId));
-      stream.writeVInt(characters[i + 8].level - 1); // level
+      const character = characters[i + 8];
+      stream.writeVInt(character.cardId);
+      stream.writeVInt(character.level - 1); // level
       stream.writeVInt(0);
       stream.writeVInt(0); // count
       stream.writeVInt(0);
@@ -53,7 +60,8 @@ export class OwnHomeDataMessage {
       stream.writeBoolean(false);
       stream.writeBoolean(false);
     }
-    stream.writeVInt(0);
+
+    stream.writeVInt(decks.selected);
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -410,7 +418,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(8);
-    stream.writeVInt(5); // Cards found
+    stream.writeVInt(decks.decks.length * 8); // Cards found
 
     stream.writeVInt(5);
     stream.writeVInt(1); // Count

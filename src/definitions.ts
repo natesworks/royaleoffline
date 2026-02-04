@@ -1,24 +1,35 @@
+import { DeckHelper, Decks } from "./deck.js";
 import { Offsets } from "./offsets.js";
-import { isAndroid } from "./platform.js";
 import { getDocumentsDirectory, getPackageName } from "./util.js";
-import { Logger } from "./utility/logger.js";
 
 export let base = NULL;
 
-export const libc = isAndroid
-  ? Process.getModuleByName("libc.so")
-  : Process.getModuleByName("libSystem.B.dylib");
+export const libc = Process.getModuleByName("libc.so");
 
 export const malloc = new NativeFunction(
   libc.getExportByName("malloc"),
   "pointer",
   ["uint"],
 );
-
 export const mkdir = new NativeFunction(libc.getExportByName("mkdir"), "int", [
   "pointer",
   "int",
 ]);
+export const getuid = new NativeFunction(
+  libc.getExportByName("getuid"),
+  "int",
+  [],
+);
+export const access = new NativeFunction(
+  libc.getExportByName("access"),
+  "int",
+  ["pointer", "int"],
+);
+export const unlink = new NativeFunction(
+  libc.getExportByName("unlink"),
+  "int",
+  ["pointer"],
+);
 
 export let documentsDirectory: string;
 export let pkgName: string;
@@ -78,6 +89,8 @@ export let getJSONNumber: NativeFunction<
   [NativePointerValue, NativePointerValue]
 >;
 export let getIntValue: NativeFunction<number, [NativePointerValue]>;
+
+export let decks: Decks;
 
 export function load() {
   pkgName = getPackageName();
@@ -162,10 +175,18 @@ export function load() {
   ]);
 }
 
+export function load2() {
+  decks = DeckHelper.readDecks();
+}
+
 export function setBase(ptr: NativePointer) {
   base = ptr;
 }
 
 export function setAssetManager(ptr: NativePointer) {
   assetManagerPtr = ptr;
+}
+
+export function setDecks(val: Decks) {
+  decks = val;
 }

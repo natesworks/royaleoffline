@@ -1,20 +1,15 @@
 import { ByteStream } from "./bytestream.js";
-import { CommandData } from "./commanddata.js";
 
 export class LogicCommand {
-  static encode(stream: ByteStream, data: CommandData) {
-    stream.writeVInt(data.tick);
+  static encode(stream: ByteStream) {
     stream.writeVInt(0);
-    const high = Number(BigInt(data.executorId) >> 32n);
-    const low = Number(BigInt(data.executorId) & 0xffffffffn);
-    stream.writeVLong(high, low);
+    stream.writeVInt(0);
+    stream.writeVLong(0, 1);
   }
 
-  static decode(stream: ByteStream): CommandData {
-    let data = new CommandData();
-    data.tick = stream.readVInt();
+  static decode(stream: ByteStream) {
+    stream.readVInt(); // tick
     stream.readVInt(); // checksum
-    data.executorId = stream.readVLong();
-    return data;
+    stream.readVLong(); // executor id
   }
 }

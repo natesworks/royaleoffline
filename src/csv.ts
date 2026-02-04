@@ -40,12 +40,12 @@ export class CSV {
             Logger.warn("Rarity", rarity, "does not exist");
             level = 1;
           }
-          result.push(
-            new Character(
-              GlobalId.createGlobalId(classId, i + 1 + offset),
-              level,
-            ),
-          );
+
+          let globalId = GlobalId.createGlobalId(classId, i);
+          let cardId = i + 1 + offset;
+          //Logger.debug("GlobalId", globalId, "CardId", cardId);
+
+          result.push(new Character(globalId, cardId, level));
         }
       }
       offset += rowCount;

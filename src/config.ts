@@ -8,7 +8,7 @@ import { createStringObject } from "./util";
 
 export class Config {
   level = 1;
-  xp = 1;
+  xp = 0;
   trophies = 6400;
   gold = 99999;
   diamonds = 99999;
