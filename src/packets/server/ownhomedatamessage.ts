@@ -158,7 +158,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0);
     stream.writeVInt(-1);
 
-    stream.writeVInt(3); // 1 = SetNamePopup, 2 = Upgrade Card Tutorial, 3 = NameSet
+    stream.writeVInt(userdata.registered ? 3 : 1); // 1 = SetNamePopup, 2 = Upgrade Card Tutorial, 3 = NameSet
 
     stream.writeVInt(0);
     stream.writeVInt(0);
@@ -331,8 +331,8 @@ export class OwnHomeDataMessage {
       stream.writeVLong(0, 1); // id
     }
 
-    stream.writeString("Natesworks");
-    stream.writeBoolean(true); // name set by user
+    stream.writeString(userdata.name);
+    stream.writeBoolean(userdata.registered); // name set by user
 
     stream.writeVInt(config.arena); // current arena
 
@@ -445,7 +445,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(0); // AvatarUserLevelTier
 
-    stream.writeVInt(7); // HasAlliance
+    stream.writeVInt(userdata.registered ? 7 : 6); // HasAlliance
 
     // Battle Statistics
     stream.writeVInt(0); // Games Played

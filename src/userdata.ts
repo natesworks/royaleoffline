@@ -1,14 +1,6 @@
 import { ByteStream } from "./bytestream";
 import { DeckHelper, Decks } from "./deck";
-import {
-  access,
-  base,
-  documentsDirectory,
-  showCenteredFloaterText,
-  unlink,
-} from "./definitions";
-import { Offsets } from "./offsets";
-import { createStringObject } from "./util";
+import { access, documentsDirectory, unlink } from "./definitions";
 import { Logger } from "./utility/logger";
 
 export class UserData {

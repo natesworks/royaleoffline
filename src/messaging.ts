@@ -12,6 +12,7 @@ import { ByteStream } from "./bytestream";
 import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
 import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
 import { LoginMessage } from "./packets/client/loginmessage";
+import { ChangeAvatarNameMessage } from "./packets/client/changeavatarnamemessage";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -44,10 +45,14 @@ export class Messaging {
 
   static handleMessage(id: number, stream: ByteStream) {
     switch (id) {
-      // LoginMessage
       case 10101: {
         let data = LoginMessage.decode(stream);
         LoginMessage.execute(data);
+        break;
+      }
+      case 10212: {
+        let data = ChangeAvatarNameMessage.decode(stream);
+        ChangeAvatarNameMessage.execute(data);
         break;
       }
       case 14104: {
