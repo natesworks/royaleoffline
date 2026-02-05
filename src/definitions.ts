@@ -33,6 +33,7 @@ export const unlink = new NativeFunction(
 
 export let documentsDirectory: string;
 export let pkgName: string;
+export let logFile: string;
 
 export let createMessageByType: (arg0: NativePointer, arg1: number) => any;
 export let operator_new:
@@ -95,6 +96,7 @@ export let decks: Decks;
 export function load() {
   pkgName = getPackageName();
   documentsDirectory = getDocumentsDirectory();
+  logFile = documentsDirectory + "/log.txt";
 
   createMessageByType = new NativeFunction(
     base.add(Offsets.CreateMessageByType),

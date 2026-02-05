@@ -6,9 +6,9 @@ import { isAndroid } from "./platform.js";
 import { getDocumentsDirectory } from "./util.js";
 import { Logger } from "./utility/logger.js";
 
-Logger.info("Clash Royale Offline created by Natesworks");
 let library = isAndroid ? "libg.so" : "laser";
 setBase(Process.getModuleByName(library).base);
 load();
+Logger.info("Clash Royale Offline created by Natesworks");
 installHooks();
 Logger.info("Succesfully installed hooks");

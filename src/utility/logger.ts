@@ -1,5 +1,7 @@
 // Parts of this code was taken from NBS v44 and were AI generated
 
+import { logFile } from "src/definitions";
+
 function getTimestamp(): string {
   const d = new Date();
   const dd = String(d.getDate()).padStart(2, "0");
@@ -48,33 +50,43 @@ Log levels:
 5 - None
 */
 export class Logger {
+  static writeToFile(text: string) {
+    let prev = File.readAllText(logFile);
+    File.writeAllText(logFile, prev + text + "\n");
+  }
+
   static error(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [ERROR] ${msg}`;
+    this.writeToFile(line);
     console.error(line);
   }
 
   static warn(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [WARN] ${msg}`;
+    this.writeToFile(line);
     console.warn(line);
   }
 
   static info(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [INFO] ${msg}`;
+    this.writeToFile(line);
     console.info(line);
   }
 
   static debug(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [DEBUG] ${msg}`;
+    this.writeToFile(line);
     console.log(line);
   }
 
   static verbose(...args: any[]): void {
     const msg = format(args);
     const line = `${getTimestamp()} [VERBOSE] ${msg}`;
+    this.writeToFile(line);
     console.log(line);
   }
 }
