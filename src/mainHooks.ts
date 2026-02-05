@@ -1,11 +1,6 @@
 import { Offsets } from "./offsets.js";
 import { PiranhaMessage } from "./piranhamessage.js";
-import {
-  base,
-  getCSV,
-  setAssetManager,
-  startTrainingCampMatch,
-} from "./definitions.js";
+import { base, startTrainingCampMatch } from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
@@ -38,32 +33,17 @@ export function installHooks() {
     },
   });
 
-  if (Process.arch == "ia32") {
-    Memory.patchCode(
-      base.add(Offsets.CreateMessageByTypeCMP),
-      Process.pageSize,
-      (code) => {
-        const pcWriter = new X86Writer(code);
-        pcWriter.putNop();
-        pcWriter.putJmpAddress(
-          base.add(Offsets.CreateMessageByTypeJumpAddress),
-        );
-        pcWriter.flush();
-      },
-    );
-  } else if (Process.arch == "arm") {
-    Memory.patchCode(
-      base.add(Offsets.CreateMessageByTypeLDRB),
-      Process.pageSize,
-      (code) => {
-        const pcWriter = new ThumbWriter(code);
-        pcWriter.putBranchAddress(
-          base.add(Offsets.CreateMessageByTypeJumpAddress),
-        );
-        pcWriter.flush();
-      },
-    );
-  }
+  Memory.patchCode(
+    base.add(Offsets.CreateMessageByTypeLDRB),
+    Process.pageSize,
+    (code) => {
+      const pcWriter = new ThumbWriter(code);
+      pcWriter.putBranchAddress(
+        base.add(Offsets.CreateMessageByTypeJumpAddress),
+      );
+      pcWriter.flush();
+    },
+  );
 
   Interceptor.attach(base.add(Offsets.SendMessage), {
     onEnter(args) {

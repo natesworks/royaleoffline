@@ -38,8 +38,8 @@ export class LogicSwapSpellsCommand {
       spells[data.cardOffset].level;
 
     let old = spells[data.deckOffset];
-    spells[data.deckOffset] = spells[sourceIndex];
-    spells[sourceIndex] = old;
+    spells[data.deckOffset] = spells[data.cardOffset];
+    spells[data.cardOffset] = old;
 
     DeckHelper.writeDecks(decks);
   }

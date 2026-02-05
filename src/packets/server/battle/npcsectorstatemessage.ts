@@ -213,7 +213,7 @@ export class NpcSectorStateMessage {
     for (let i = 0; i < 8; i++) {
       const character = decks.decks[decks.selected].characters[i];
       stream.writeVInt(character.cardId);
-      stream.writeVInt(0);
+      stream.writeVInt(character.level - 1);
     }
 
     stream.writeVInt(0);
