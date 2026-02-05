@@ -1,15 +1,15 @@
 import { ByteStream } from "src/bytestream";
 import { ConfigHelper } from "src/config";
 import { CSV } from "src/csv";
-import { decks } from "src/definitions";
+import { userdata } from "src/definitions";
 import { GlobalId } from "src/globalid";
-import { Logger } from "src/utility/logger";
 
 export class OwnHomeDataMessage {
   static encode(): number[] {
     let stream = new ByteStream([]);
     const characters = CSV.getSpells();
     const config = ConfigHelper.readConfig();
+    const decks = userdata.decks;
 
     // LogicClientHome
     stream.writeLong(0, 1); // player id

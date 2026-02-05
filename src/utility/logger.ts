@@ -51,7 +51,10 @@ Log levels:
 */
 export class Logger {
   static writeToFile(text: string) {
-    let prev = File.readAllText(logFile);
+    let prev = "";
+    try {
+      prev = File.readAllText(logFile);
+    } catch (e) {}
     File.writeAllText(logFile, prev + text + "\n");
   }
 

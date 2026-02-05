@@ -1,9 +1,6 @@
-import { Logger } from "src/utility/logger";
 import { ByteStream } from "../../bytestream";
 import { LogicCommand } from "../../logiccommand";
-import { DeckHelper } from "src/deck";
-import { decks, setDecks } from "src/definitions";
-import { GlobalId } from "src/globalid";
+import { userdata } from "src/definitions";
 import { CSV } from "src/csv";
 
 export class LogicSwapSpellsCommandData {
@@ -26,7 +23,8 @@ export class LogicSwapSpellsCommand {
   }
 
   static execute(data: LogicSwapSpellsCommandData) {
-    let spells = CSV.getSpells();
+    const spells = CSV.getSpells();
+    const decks = userdata.decks;
 
     let selectedDeck = decks.decks[decks.selected];
 
@@ -41,6 +39,6 @@ export class LogicSwapSpellsCommand {
     spells[data.deckOffset] = spells[data.cardOffset];
     spells[data.cardOffset] = old;
 
-    DeckHelper.writeDecks(decks);
+    userdata.write();
   }
 }

@@ -1,5 +1,6 @@
 import { DeckHelper, Decks } from "./deck.js";
 import { Offsets } from "./offsets.js";
+import { UserData } from "./userdata.js";
 import { getDocumentsDirectory, getPackageName } from "./util.js";
 
 export let base = NULL;
@@ -77,8 +78,6 @@ export let getIntegerValueAt: NativeFunction<
   [NativePointerValue, number]
 >;
 
-export let assetManagerPtr: NativePointer;
-
 export let startTrainingCampMatch:
   | NativeFunction<void, [NativePointerValue]>
   | ((arg0: any) => void);
@@ -90,8 +89,12 @@ export let getJSONNumber: NativeFunction<
   [NativePointerValue, NativePointerValue]
 >;
 export let getIntValue: NativeFunction<number, [NativePointerValue]>;
+export let showCenteredFloaterText: NativeFunction<
+  void,
+  [NativePointerValue, NativePointerValue, number, number]
+>;
 
-export let decks: Decks;
+export let userdata = new UserData();
 
 export function load() {
   pkgName = getPackageName();
@@ -177,18 +180,6 @@ export function load() {
   ]);
 }
 
-export function load2() {
-  decks = DeckHelper.readDecks();
-}
-
 export function setBase(ptr: NativePointer) {
   base = ptr;
-}
-
-export function setAssetManager(ptr: NativePointer) {
-  assetManagerPtr = ptr;
-}
-
-export function setDecks(val: Decks) {
-  decks = val;
 }

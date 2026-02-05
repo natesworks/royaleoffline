@@ -1,6 +1,6 @@
 import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
-import { decks } from "src/definitions";
+import { userdata } from "src/definitions";
 import { GlobalId } from "src/globalid";
 import { Logger } from "src/utility/logger";
 
@@ -9,8 +9,8 @@ export class NpcSectorStateMessage {
     let stream = new ByteStream([]);
 
     const towers = 6; // Tower Count
-    let buildings = CSV.getBuildings();
-    let characters = CSV.getCharacters();
+    const characters = CSV.getCharacters();
+    const decks = userdata.decks;
 
     stream.writeBoolean(false); // IsCompressed
 

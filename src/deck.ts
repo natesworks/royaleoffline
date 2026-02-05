@@ -23,16 +23,8 @@ export class Decks {
 }
 
 export class DeckHelper {
-  static readDecks(): Decks {
+  static readDecks(stream: ByteStream): Decks {
     const result: Decks = new Decks();
-    const path = documentsDirectory + "/decks.bin";
-
-    if (access(Memory.allocUtf8String(path), 0) === -1) {
-      this.writeDefaultDecks();
-    }
-
-    const data = File.readAllBytes(path);
-    const stream = new ByteStream(Array.from(new Uint8Array(data)));
 
     result.selected = stream.readByte();
     const deckCount = stream.readByte();
@@ -59,12 +51,7 @@ export class DeckHelper {
     return result;
   }
 
-  static writeDecks(decks: Decks) {
-    const path = documentsDirectory + "/decks.bin";
-    unlink(Memory.allocUtf8String(path));
-
-    const stream = new ByteStream([]);
-
+  static writeDecks(stream: ByteStream, decks: Decks) {
     stream.writeByte(decks.selected);
     stream.writeByte(decks.decks.length);
 
@@ -78,17 +65,11 @@ export class DeckHelper {
         stream.writeInt(character.level);
       }
     }
-
-    File.writeAllBytes(path, stream.payload);
   }
 
-  static writeDefaultDecks() {
+  static writeDefaultDecks(stream: ByteStream) {
     Logger.debug("Writing default decks");
 
-    const path = documentsDirectory + "/decks.bin";
-    unlink(Memory.allocUtf8String(path));
-
-    const stream = new ByteStream([]);
     const characters = CSV.getSpells();
 
     stream.writeByte(0);
@@ -103,7 +84,25 @@ export class DeckHelper {
         stream.writeInt(character.level);
       }
     }
+  }
 
-    File.writeAllBytes(path, stream.payload);
+  static getDefaultDecks(): Decks {
+    let decks = new Decks();
+    const allCharacters = CSV.getSpells();
+
+    for (let i = 0; i < 5; i++) {
+      let characters: Character[] = [];
+
+      for (let j = 0; j < 8; j++) {
+        const character = allCharacters[j];
+        characters.push(
+          new Character(character.globalId, character.cardId, character.level),
+        );
+      }
+
+      decks.decks.push(new Deck(characters));
+    }
+
+    return decks;
   }
 }

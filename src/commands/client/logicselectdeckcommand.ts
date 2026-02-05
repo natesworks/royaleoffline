@@ -2,7 +2,8 @@ import { Logger } from "src/utility/logger";
 import { ByteStream } from "../../bytestream";
 import { LogicCommand } from "../../logiccommand";
 import { DeckHelper } from "src/deck";
-import { decks } from "src/definitions";
+import { userdata } from "src/definitions";
+import { UserData } from "src/userdata";
 
 export class LogicSelectDeckCommand {
   static commandId = 501;
@@ -16,8 +17,11 @@ export class LogicSelectDeckCommand {
   }
 
   static execute(deckIndex: number) {
+    const decks = userdata.decks;
+
     Logger.debug("Switching to deck", deckIndex);
+
     decks.selected = deckIndex;
-    DeckHelper.writeDecks(decks);
+    userdata.write();
   }
 }
