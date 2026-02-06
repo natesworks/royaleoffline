@@ -334,7 +334,7 @@ export class OwnHomeDataMessage {
     stream.writeString(userdata.name);
     stream.writeBoolean(userdata.registered); // name set by user
 
-    stream.writeVInt(config.arena); // current arena
+    stream.writeVInt(config.arena); // current arena; TODO: fix
 
     stream.writeVInt(config.trophies); // trophies
 
@@ -419,7 +419,7 @@ export class OwnHomeDataMessage {
 
     stream.writeVInt(5);
     stream.writeVInt(8);
-    stream.writeVInt(decks.decks.length * 8); // Cards found
+    stream.writeVInt(characters.length); // Cards found
 
     stream.writeVInt(5);
     stream.writeVInt(1); // Count

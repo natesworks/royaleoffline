@@ -4,7 +4,7 @@ import { base, startTrainingCampMatch } from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
-import { backtrace } from "./util.js";
+import { backtrace, createStringObject } from "./util.js";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
@@ -103,5 +103,11 @@ export function installHooks() {
       "void",
       ["pointer"],
     ),
+  );
+
+  // i'm too lazy to figure out how to change it in OHD
+  Interceptor.replace(
+    base.add(Offsets.OnArenaChanged),
+    new NativeCallback(function () {}, "void", []),
   );
 }

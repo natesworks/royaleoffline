@@ -57,4 +57,6 @@ export const Offsets = {
   GetJSONObject: 0x2278f5,
   GetJSONNumber: 0x262225,
   GetIntValue: 0x261ded,
+
+  OnArenaChanged: 0xae715,
 };
