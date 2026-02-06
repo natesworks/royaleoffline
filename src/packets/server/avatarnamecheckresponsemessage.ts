@@ -23,7 +23,7 @@ export class AvatarNameCheckResponseMessage {
     // 4 = invalid mirror
     // 5 = low level
 
-    stream.writeBoolean(data.errorCode == 0); // is valid
+    stream.writeBoolean(data.errorCode != 0); // is invalid
     stream.writeInt(data.errorCode);
     stream.writeString(data.name);
 
