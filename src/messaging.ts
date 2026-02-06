@@ -13,6 +13,7 @@ import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemes
 import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
 import { LoginMessage } from "./packets/client/loginmessage";
 import { ChangeAvatarNameMessage } from "./packets/client/changeavatarnamemessage";
+import { AvatarNameCheckRequestMessage } from "./packets/client/avatarnamecheckrequestmessage";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -68,6 +69,11 @@ export class Messaging {
       case 14102: {
         let data = EndClientTurnMessage.decode(stream);
         EndClientTurnMessage.execute(data);
+        break;
+      }
+      case AvatarNameCheckRequestMessage.id: {
+        let data = AvatarNameCheckRequestMessage.decode(stream);
+        AvatarNameCheckRequestMessage.execute(data);
         break;
       }
     }

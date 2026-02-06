@@ -1,4 +1,4 @@
-import { ByteStream } from "../../bytestream";
+import { ByteStream } from "src/bytestream";
 
 export class LoginOkMessage {
   static encode(): number[] {

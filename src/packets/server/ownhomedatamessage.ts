@@ -332,7 +332,7 @@ export class OwnHomeDataMessage {
     }
 
     stream.writeString(userdata.name);
-    stream.writeBoolean(userdata.registered); // name set by user
+    stream.writeBoolean(false); // name change state
 
     stream.writeVInt(config.arena); // current arena; TODO: fix
 
