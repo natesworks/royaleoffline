@@ -7,13 +7,13 @@ import {
 } from "./definitions";
 import { PiranhaMessage } from "./piranhamessage";
 import { Logger } from "./utility/logger";
-import { OwnHomeDataMessage } from "./packets/server/ownhomedatamessage";
+import { OwnHomeDataMessage } from "./packets/server/home/ownhomedatamessage";
 import { ByteStream } from "./bytestream";
 import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
-import { EndClientTurnMessage } from "./packets/client/endclientturnmessage";
-import { LoginMessage } from "./packets/client/loginmessage";
-import { ChangeAvatarNameMessage } from "./packets/client/changeavatarnamemessage";
-import { AvatarNameCheckRequestMessage } from "./packets/client/avatarnamecheckrequestmessage";
+import { EndClientTurnMessage } from "./packets/client/home/endclientturnmessage";
+import { LoginMessage } from "./packets/client/login/loginmessage";
+import { ChangeAvatarNameMessage } from "./packets/client/home/changeavatarnamemessage";
+import { AvatarNameCheckRequestMessage } from "./packets/client/home/avatarnamecheckrequestmessage";
 
 export class Messaging {
   static sendOfflineMessage(id: number, payload: number[]): NativePointer {
@@ -44,36 +44,40 @@ export class Messaging {
     return message;
   }
 
-  static handleMessage(id: number, stream: ByteStream) {
+  static handleMessage(id: number, messagePayload: number[]) {
     switch (id) {
       case 10101: {
-        let data = LoginMessage.decode(stream);
-        LoginMessage.execute(data);
+        let message = new LoginMessage(messagePayload);
+        message.decode();
+        message.execute();
         break;
       }
       case 10212: {
-        let data = ChangeAvatarNameMessage.decode(stream);
-        ChangeAvatarNameMessage.execute(data);
+        let message = new ChangeAvatarNameMessage(messagePayload);
+        message.decode();
+        message.execute();
         break;
       }
       case 14104: {
-        Messaging.sendOfflineMessage(21903, NpcSectorStateMessage.encode());
+        //Messaging.sendOfflineMessage(21903, NpcSectorStateMessage.encode());
         break;
       }
       // gohomefromofflinepractice
       case 14101: {
-        Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
+        //Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
         break;
       }
       // endclientturn
       case 14102: {
-        let data = EndClientTurnMessage.decode(stream);
-        EndClientTurnMessage.execute(data);
+        let message = new EndClientTurnMessage(messagePayload);
+        message.decode();
+        message.execute();
         break;
       }
-      case AvatarNameCheckRequestMessage.id: {
-        let data = AvatarNameCheckRequestMessage.decode(stream);
-        AvatarNameCheckRequestMessage.execute(data);
+      case 14600: {
+        let message = new AvatarNameCheckRequestMessage(messagePayload);
+        message.decode();
+        message.execute();
         break;
       }
     }

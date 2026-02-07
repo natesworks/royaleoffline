@@ -59,4 +59,8 @@ export const Offsets = {
   GetIntValue: 0x261ded,
 
   OnArenaChanged: 0xae715,
+
+  SettingPopupConstructor: 0x121431,
+  AddGameButton: 0x96c6d,
+  GameButtonSetText: 168,
 };

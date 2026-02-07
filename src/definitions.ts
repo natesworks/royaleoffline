@@ -82,7 +82,7 @@ export let startTrainingCampMatch:
   | NativeFunction<void, [NativePointerValue]>
   | ((arg0: any) => void);
 
-export let loadAsset: NativeFunction<void, [NativePointerValue]>;
+export let loadAsset: NativeFunction<number, [NativePointerValue]>;
 export let getJSONObject: NativeFunction<NativePointer, [NativePointerValue]>;
 export let getJSONNumber: NativeFunction<
   NativePointer,
@@ -92,6 +92,10 @@ export let getIntValue: NativeFunction<number, [NativePointerValue]>;
 export let showCenteredFloaterText: NativeFunction<
   void,
   [NativePointerValue, NativePointerValue, number, number]
+>;
+export let addGameButton: NativeFunction<
+  NativePointer,
+  [NativePointerValue, NativePointerValue, number]
 >;
 
 export let userdata = new UserData();
@@ -162,7 +166,7 @@ export function load() {
     ["pointer"],
   );
 
-  loadAsset = new NativeFunction(base.add(Offsets.LoadAsset), "void", [
+  loadAsset = new NativeFunction(base.add(Offsets.LoadAsset), "bool", [
     "pointer",
   ]);
   getJSONObject = new NativeFunction(
@@ -178,6 +182,12 @@ export function load() {
   getIntValue = new NativeFunction(base.add(Offsets.GetIntValue), "int", [
     "pointer",
   ]);
+
+  addGameButton = new NativeFunction(
+    base.add(Offsets.AddGameButton),
+    "pointer",
+    ["pointer", "pointer", "bool"],
+  );
 }
 
 export function setBase(ptr: NativePointer) {

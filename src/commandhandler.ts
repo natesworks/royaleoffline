@@ -1,28 +1,31 @@
 import { ByteStream } from "./bytestream";
-import { LogicSelectDeckCommand } from "./commands/client/logicselectdeckcommand";
-import {
-  LogicSwapSpellsCommand,
-  LogicSwapSpellsCommandData,
-} from "./commands/client/logicswapspellscommand";
+import { LogicSelectDeckCommand } from "./commands/client/home/decks/logicselectdeckcommand";
+import { LogicSwapSpellsCommand } from "./commands/client/home/decks/logicswapspellscommand";
+import { LogicChangeNameCommand } from "./commands/server/home/logicchangenamecommand";
 import { Logger } from "./utility/logger";
 
 export class CommandHandler {
-  static handleCommand(id: number, stream: ByteStream): ByteStream | null {
+  static createCommandOfType(id: number): any {
     switch (id) {
-      case 500: {
-        let data = LogicSwapSpellsCommand.decode(stream);
-        LogicSwapSpellsCommand.execute(data);
-        break;
-      }
-      case 501: {
-        let data = LogicSelectDeckCommand.decode(stream);
-        LogicSelectDeckCommand.execute(data);
-        break;
-      }
+      case 201:
+        return new LogicChangeNameCommand();
+      case 500:
+        return new LogicSwapSpellsCommand();
+      case 501:
+        return new LogicSelectDeckCommand();
       default:
-        Logger.warn("Unhandled command of type:", id);
-        return null;
+        Logger.warn(
+          "CommandHandler::createCommandOfType",
+          "No case for command of type",
+          id,
+        );
     }
+  }
+
+  static handleCommand(id: number, stream: ByteStream): ByteStream | null {
+    let command = this.createCommandOfType(id);
+    command.decode(stream);
+    command.execute();
     return stream;
   }
 }

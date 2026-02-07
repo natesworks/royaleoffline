@@ -5,6 +5,12 @@ import { userdata } from "src/definitions";
 import { GlobalId } from "src/globalid";
 
 export class OwnHomeDataMessage {
+  messagePayload: number[];
+
+  constructor(messagePayload: number[]) {
+    this.messagePayload = messagePayload;
+  }
+
   static encode(): number[] {
     let stream = new ByteStream([]);
     const characters = CSV.getSpells();
@@ -475,5 +481,9 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0); // PlayTime
 
     return stream.payload;
+  }
+
+  getMessageType() {
+    return 24101;
   }
 }

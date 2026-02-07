@@ -2,10 +2,15 @@ import { ByteStream } from "src/bytestream";
 import { CSV } from "src/csv";
 import { userdata } from "src/definitions";
 import { GlobalId } from "src/globalid";
-import { Logger } from "src/utility/logger";
 
 export class NpcSectorStateMessage {
-  static encode(): number[] {
+  messagePayload: number[];
+
+  constructor(messagePayload: number[]) {
+    this.messagePayload = messagePayload;
+  }
+
+  encode() {
     let stream = new ByteStream([]);
 
     const towers = 6; // Tower Count
@@ -319,6 +324,10 @@ export class NpcSectorStateMessage {
 
     for (let i = 0; i < towers; i++) stream.writeHex("00000000000000A401A401");
 
-    return stream.payload;
+    this.messagePayload = stream.payload;
+  }
+
+  getMessageType() {
+    return 21903;
   }
 }

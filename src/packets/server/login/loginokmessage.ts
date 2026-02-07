@@ -1,6 +1,12 @@
 import { ByteStream } from "src/bytestream";
 
 export class LoginOkMessage {
+  messagePayload: number[];
+
+  constructor(messagePayload: number[]) {
+    this.messagePayload = messagePayload;
+  }
+
   static encode(): number[] {
     let stream = new ByteStream([]);
 
@@ -30,5 +36,9 @@ export class LoginOkMessage {
     stream.writeString("");
 
     return stream.payload;
+  }
+
+  getMessageType() {
+    return 20104;
   }
 }

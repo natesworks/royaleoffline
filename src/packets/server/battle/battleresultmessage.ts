@@ -1,7 +1,13 @@
 import { ByteStream } from "src/bytestream";
 
 export class BattleResultMessage {
-  static encode(): number[] {
+  messagePayload: number[];
+
+  constructor(messagePayload: number[]) {
+    this.messagePayload = messagePayload;
+  }
+
+  encode() {
     let stream = new ByteStream([]);
 
     stream.writeVInt(1);
@@ -35,6 +41,10 @@ export class BattleResultMessage {
     stream.writeVInt(21);
     stream.writeVInt(1);
 
-    return stream.payload;
+    this.messagePayload = stream.payload;
+  }
+
+  getMessageType() {
+    return 20225;
   }
 }

@@ -1,10 +1,16 @@
 import { Offsets } from "./offsets.js";
 import { PiranhaMessage } from "./piranhamessage.js";
-import { base, startTrainingCampMatch } from "./definitions.js";
+import {
+  addGameButton,
+  base,
+  loadAsset,
+  startTrainingCampMatch,
+} from "./definitions.js";
 import { Messaging } from "./messaging.js";
 import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { backtrace, createStringObject } from "./util.js";
+import { create } from "domain";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
@@ -68,11 +74,10 @@ export function installHooks() {
           .readPointer();
         let payload = payloadPtr.readByteArray(length);
         if (payload !== null && length > 0) {
-          let stream = new ByteStream(Array.from(new Uint8Array(payload)));
           Logger.debug("Stream dump:", payload);
-          Messaging.handleMessage(type, stream);
+          Messaging.handleMessage(type, Array.from(new Uint8Array(payload)));
         } else {
-          Messaging.handleMessage(type, new ByteStream([]));
+          Messaging.handleMessage(type, []);
         }
 
         PiranhaMessage.destroyMessage(message);
@@ -110,4 +115,26 @@ export function installHooks() {
     base.add(Offsets.OnArenaChanged),
     new NativeCallback(function () {}, "void", []),
   );
+
+  Interceptor.attach(base.add(Offsets.SettingPopupConstructor), {
+    onLeave(retval) {
+      let btn = addGameButton(
+        retval,
+        Memory.allocUtf8String("battlesettings_button"),
+        1,
+      );
+      let setTextOffset = btn
+        .readPointer()
+        .add(Offsets.GameButtonSetText)
+        .readPointer();
+      let setText = new NativeFunction(setTextOffset, "void", [
+        "pointer",
+        "pointer",
+        "pointer",
+      ]);
+      let textField = Memory.allocUtf8String("txt");
+      let text = createStringObject("Battle");
+      setText(btn, textField, text);
+    },
+  });
 }
