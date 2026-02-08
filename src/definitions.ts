@@ -89,14 +89,39 @@ export let getJSONNumber: NativeFunction<
   [NativePointerValue, NativePointerValue]
 >;
 export let getIntValue: NativeFunction<number, [NativePointerValue]>;
-export let showCenteredFloaterText: NativeFunction<
-  void,
-  [NativePointerValue, NativePointerValue, number, number]
->;
+export let showCenteredFloaterText: (
+  arg0: NativePointer,
+  arg1: NativePointer,
+  arg2: number,
+  arg3: number,
+) => void;
 export let addGameButton: NativeFunction<
   NativePointer,
   [NativePointerValue, NativePointerValue, number]
 >;
+
+export let popupBaseConstructor:
+  | NativeFunction<
+      NativePointer,
+      [
+        NativePointerValue,
+        NativePointerValue,
+        NativePointerValue,
+        number,
+        number,
+      ]
+    >
+  | (() => void);
+export let getTextFieldByName: NativeFunction<
+  NativePointer,
+  [NativePointerValue, NativePointerValue]
+>;
+export let showPopup: NativeFunction<
+  void,
+  [NativePointerValue, NativePointerValue, number, number, number]
+>;
+export let getGUIInstance: NativeFunction<NativePointer, []>;
+export let getString: NativeFunction<NativePointer, [NativePointerValue]>;
 
 export let userdata = new UserData();
 
@@ -183,11 +208,44 @@ export function load() {
     "pointer",
   ]);
 
+  showCenteredFloaterText = new NativeFunction(
+    base.add(Offsets.ShowCenteredFloaterText),
+    "void",
+    ["pointer", "pointer", "float", "long"],
+  );
+
   addGameButton = new NativeFunction(
     base.add(Offsets.AddGameButton),
     "pointer",
     ["pointer", "pointer", "bool"],
   );
+
+  popupBaseConstructor = new NativeFunction(
+    base.add(Offsets.PopupBaseConstructor),
+    "pointer",
+    ["pointer", "pointer", "pointer", "bool", "bool"],
+  );
+  getTextFieldByName = new NativeFunction(
+    base.add(Offsets.GetTextFieldByName),
+    "pointer",
+    ["pointer", "pointer"],
+  );
+  showPopup = new NativeFunction(base.add(Offsets.GUIShowPopup), "void", [
+    "pointer",
+    "pointer",
+    "bool",
+    "bool",
+    "bool",
+  ]);
+  getGUIInstance = new NativeFunction(
+    base.add(Offsets.GUIGetInstance),
+    "pointer",
+    [],
+  );
+
+  getString = new NativeFunction(base.add(Offsets.GetString), "pointer", [
+    "pointer",
+  ]);
 }
 
 export function setBase(ptr: NativePointer) {

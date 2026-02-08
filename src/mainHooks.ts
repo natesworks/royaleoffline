@@ -3,14 +3,23 @@ import { PiranhaMessage } from "./piranhamessage.js";
 import {
   addGameButton,
   base,
+  getGUIInstance,
+  getString,
+  getTextFieldByName,
   loadAsset,
+  malloc,
+  popupBaseConstructor,
+  showCenteredFloaterText,
+  showPopup,
   startTrainingCampMatch,
 } from "./definitions.js";
 import { Messaging } from "./messaging.js";
-import { ByteStream } from "./bytestream.js";
 import { Logger } from "./utility/logger.js";
 import { backtrace, createStringObject } from "./util.js";
-import { create } from "domain";
+import { BattleSettings } from "./battlesettings.js";
+
+let battleSettingsButton: NativePointer;
+let popup: NativePointer;
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
@@ -118,12 +127,12 @@ export function installHooks() {
 
   Interceptor.attach(base.add(Offsets.SettingPopupConstructor), {
     onLeave(retval) {
-      let btn = addGameButton(
+      battleSettingsButton = addGameButton(
         retval,
         Memory.allocUtf8String("battlesettings_button"),
         1,
       );
-      let setTextOffset = btn
+      let setTextOffset = battleSettingsButton
         .readPointer()
         .add(Offsets.GameButtonSetText)
         .readPointer();
@@ -133,8 +142,17 @@ export function installHooks() {
         "pointer",
       ]);
       let textField = Memory.allocUtf8String("txt");
-      let text = createStringObject("Battle");
-      setText(btn, textField, text);
+      let text = getString(createStringObject("TID_BATTLESETTINGS"));
+      setText(battleSettingsButton, textField, text);
+    },
+  });
+
+  Interceptor.attach(base.add(Offsets.SettingPopupButtonClicked), {
+    onEnter(args) {
+      if (args[1].equals(battleSettingsButton)) {
+        let battleSettings = new BattleSettings();
+        battleSettings.show();
+      }
     },
   });
 }

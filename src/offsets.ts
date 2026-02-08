@@ -63,4 +63,13 @@ export const Offsets = {
   SettingPopupConstructor: 0x121431,
   AddGameButton: 0x96c6d,
   GameButtonSetText: 168,
+
+  ShowCenteredFloaterText: 0x8dba9,
+
+  SettingPopupButtonClicked: 0x1226ad,
+  PopupBaseConstructor: 0x11ad59,
+  GetTextFieldByName: 0x23fa01,
+  GUIGetInstance: 0x8d775,
+  GUIShowPopup: 0x8df25,
+  GetString: 0xbf845,
 };
