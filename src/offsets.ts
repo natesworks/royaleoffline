@@ -72,4 +72,8 @@ export const Offsets = {
   GUIGetInstance: 0x8d775,
   GUIShowPopup: 0x8df25,
   GetString: 0xbf845,
+  VTablePointer: 0,
+  VTablePointerValue: 0x502ca0,
+  VTablePointer2: 0x48,
+  VTablePointer2Value: 0x502d7c,
 };
