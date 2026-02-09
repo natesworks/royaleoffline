@@ -90,4 +90,6 @@ export const Offsets = {
   GetMovieClipByName: 0x23f989,
   GetWidth: 0x23d9dd,
   GetHeight: 0x23da59,
+  CustomButtonPressed: 0x2592b1,
+  SetMovieClip: 0x259469,
 };

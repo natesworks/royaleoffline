@@ -1,26 +1,14 @@
-import { Offsets } from "./offsets.js";
-import { PiranhaMessage } from "./piranhamessage.js";
+import { Offsets } from "./offsets";
+import { PiranhaMessage } from "./piranhamessage";
 import {
-  addGameButton,
   base,
   battleSettings,
-  getGUIInstance,
-  getString,
-  getTextFieldByName,
-  loadAsset,
-  malloc,
-  popupBaseConstructor,
-  showCenteredFloaterText,
-  showPopup,
+  buttonHandlers,
   startTrainingCampMatch,
-} from "./definitions.js";
-import { Messaging } from "./messaging.js";
-import { Logger } from "./utility/logger.js";
-import { backtrace, createStringObject } from "./util.js";
-import { BattleSettings } from "./battlesettings.js";
-
-let battleSettingsButton: NativePointer;
-let popup: NativePointer;
+} from "./definitions";
+import { Messaging } from "./messaging";
+import { Logger } from "./utility/logger";
+import { backtrace } from "./util";
 
 export function installHooks() {
   Interceptor.attach(base.add(Offsets.DebuggerWarning), {
@@ -143,6 +131,19 @@ export function installHooks() {
   Interceptor.attach(base.add(Offsets.CombatHUDConstructor), {
     onLeave(combatHUD) {
       battleSettings.createBattleButton(combatHUD);
+    },
+  });
+
+  Interceptor.attach(base.add(Offsets.CustomButtonPressed), {
+    onEnter(args) {
+      const clicked = args[0];
+
+      for (const entry of buttonHandlers) {
+        if (entry.ptr.equals(clicked)) {
+          entry.handler(clicked);
+          break;
+        }
+      }
     },
   });
 }

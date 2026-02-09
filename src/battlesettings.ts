@@ -1,6 +1,7 @@
 import {
   addGameButton,
   base,
+  buttonHandlers,
   gameButtonContructor,
   getGUIInstance,
   getHeight,
@@ -11,8 +12,8 @@ import {
   getWidth,
   malloc,
   popupBaseConstructor,
-  setDisplayObject,
   setHeight,
+  setMovieClip,
   setPixelSnappedXY,
   setWidth,
   setXY,
@@ -84,25 +85,38 @@ export class BattleSettings {
     const stageWidth = base.add(Offsets.BattleScreenStageWidth).readFloat();
     const stageHeight = base.add(Offsets.BattleScreenStageHeight).readFloat();
     const button = malloc(200);
+    gameButtonContructor(button);
 
     let movieclip = getMovieClip(
       Memory.allocUtf8String("sc/natesworks.sc"),
       Memory.allocUtf8String("nw_battlesettings_button"),
     );
-    setPixelSnappedXY(
-      movieclip,
-      stageWidth * 0.5 - getWidth(movieclip) / 2,
-      stageHeight - 1.5 * getHeight(movieclip),
-    );
-    spriteAddChild(combatHUD, movieclip);
-    gameButtonContructor(button);
     let movieclip2 = getMovieClipByName(
       movieclip,
       Memory.allocUtf8String("battlesettings_button"),
     );
-    setDisplayObject(button, movieclip2, 1);
-    spriteAddChild(movieclip, button);
+    setMovieClip(button, movieclip2, 1);
+    setPixelSnappedXY(
+      button,
+      stageWidth * 0.5 - getWidth(button) / 2,
+      stageHeight - 1.5 * getHeight(button),
+    );
+    spriteAddChild(combatHUD, button);
+
+    this.battleButton = button;
+
+    buttonHandlers.push({
+      ptr: this.battleButton,
+      handler: (ptr) => this.onClick(ptr),
+    });
+
     Logger.debug("Added nw_battlesettings_button");
+  }
+
+  onClick(button: NativePointer) {
+    if (button.equals(this.battleButton)) {
+      this.show();
+    }
   }
 
   show() {

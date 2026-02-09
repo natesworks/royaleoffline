@@ -132,7 +132,7 @@ export let getMovieClip: NativeFunction<
   NativePointer,
   [NativePointerValue, NativePointerValue]
 >;
-export let setDisplayObject: NativeFunction<
+export let setMovieClip: NativeFunction<
   void,
   [NativePointerValue, NativePointerValue, number]
 >;
@@ -289,11 +289,11 @@ export function load() {
     "pointer",
     "pointer",
   ]);
-  setDisplayObject = new NativeFunction(
-    base.add(Offsets.SetDisplayObject),
-    "void",
-    ["pointer", "pointer", "bool"],
-  );
+  setMovieClip = new NativeFunction(base.add(Offsets.SetMovieClip), "void", [
+    "pointer",
+    "pointer",
+    "bool",
+  ]);
   spriteAddChild = new NativeFunction(
     base.add(Offsets.SpriteAddChild),
     "void",
@@ -337,3 +337,9 @@ export function setBase(ptr: NativePointer) {
 export function initBattleSettings() {
   battleSettings = new BattleSettings();
 }
+
+export type ButtonHandler = (ptr: NativePointer) => void;
+export const buttonHandlers: Array<{
+  ptr: NativePointer;
+  handler: ButtonHandler;
+}> = [];
