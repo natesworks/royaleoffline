@@ -92,4 +92,5 @@ export const Offsets = {
   GetHeight: 0x23da59,
   CustomButtonPressed: 0x2592b1,
   SetMovieClip: 0x259469,
+  ModalClose: 0xa4,
 };

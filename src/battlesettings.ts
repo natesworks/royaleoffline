@@ -2,6 +2,7 @@ import {
   addGameButton,
   base,
   buttonHandlers,
+  closePopup,
   gameButtonContructor,
   getGUIInstance,
   getHeight,
@@ -25,13 +26,13 @@ import { createStringObject } from "./util";
 import { Logger } from "./utility/logger";
 
 export class BattleSettings {
-  settingsButton: NativePointer = NULL;
-  battleButton: NativePointer = NULL;
+  settingsButton = NULL;
+  battleButton = NULL;
 
-  popup: NativePointer;
-  closeButton: NativePointer;
+  popup = NULL;
+  closeButton = NULL;
 
-  constructor() {
+  createPopup() {
     this.popup = malloc(1024);
     let scFile = createStringObject("sc/natesworks.sc");
     let exportName = createStringObject("nw_battlesettings");
@@ -54,6 +55,11 @@ export class BattleSettings {
       Memory.allocUtf8String("close"),
       1,
     );
+
+    buttonHandlers.push({
+      ptr: this.closeButton,
+      handler: (ptr) => this.onClick(ptr),
+    });
 
     /*
     addGameButton(popup, Memory.allocUtf8String("TID_INFINITEELIXIR"), 1);
@@ -114,12 +120,29 @@ export class BattleSettings {
   }
 
   onClick(button: NativePointer) {
+    Logger.debug("Button clicked");
+
     if (button.equals(this.battleButton)) {
       this.show();
+    } else if (button.equals(this.closeButton)) {
+      this.hide();
     }
   }
 
   show() {
+    if (this.popup.isNull()) this.createPopup();
     showPopup(getGUIInstance(), this.popup, 1, 1, 1);
+  }
+
+  // GUI::closePopup doesn't exist in this version
+  hide() {
+    let vtable = this.popup.readPointer();
+    let modalClose = new NativeFunction(
+      vtable.add(Offsets.ModalClose).readPointer(),
+      "void",
+      ["pointer"],
+    );
+    modalClose(this.popup);
+    this.popup = NULL;
   }
 }
