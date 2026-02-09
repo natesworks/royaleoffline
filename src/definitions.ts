@@ -124,6 +124,23 @@ export let showPopup: NativeFunction<
 >;
 export let getGUIInstance: NativeFunction<NativePointer, []>;
 export let getString: NativeFunction<NativePointer, [NativePointerValue]>;
+export let gameButtonContructor: NativeFunction<
+  NativePointer,
+  [NativePointerValue]
+>;
+export let getMovieClip: NativeFunction<
+  NativePointer,
+  [NativePointerValue, NativePointerValue]
+>;
+export let setDisplayObject: NativeFunction<
+  void,
+  [NativePointerValue, NativePointerValue, number]
+>;
+export let spriteAddChild: NativeFunction<
+  void,
+  [NativePointerValue, NativePointerValue]
+>;
+export let setXY: NativeFunction<void, [NativePointerValue, number, number]>;
 
 export let userdata = new UserData();
 
@@ -249,6 +266,31 @@ export function load() {
 
   getString = new NativeFunction(base.add(Offsets.GetString), "pointer", [
     "pointer",
+  ]);
+
+  gameButtonContructor = new NativeFunction(
+    base.add(Offsets.GameButtonConstructor),
+    "pointer",
+    ["pointer"],
+  );
+  getMovieClip = new NativeFunction(base.add(Offsets.GetMovieClip), "pointer", [
+    "pointer",
+    "pointer",
+  ]);
+  setDisplayObject = new NativeFunction(
+    base.add(Offsets.SetDisplayObject),
+    "void",
+    ["pointer", "pointer", "bool"],
+  );
+  spriteAddChild = new NativeFunction(
+    base.add(Offsets.SpriteAddChild),
+    "void",
+    ["pointer", "pointer"],
+  );
+  setXY = new NativeFunction(base.add(Offsets.SetXY), "void", [
+    "pointer",
+    "float",
+    "float",
   ]);
 }
 

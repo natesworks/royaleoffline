@@ -76,4 +76,10 @@ export const Offsets = {
   VTablePointerValue: 0x502ca0,
   VTablePointer2: 0x48,
   VTablePointer2Value: 0x502d7c,
+  CombatHUDConstructor: 0xe9a61,
+  SetDisplayObject: 0x2597dd,
+  GameButtonConstructor: 0x90305,
+  GetMovieClip: 0x2269a1,
+  SpriteAddChild: 0x24308d,
+  SetXY: 0x23d495,
 };

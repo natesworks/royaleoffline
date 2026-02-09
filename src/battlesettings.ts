@@ -10,6 +10,7 @@ import {
 } from "./definitions";
 import { Offsets } from "./offsets";
 import { createStringObject } from "./util";
+import { ButtonHelper } from "./utility/buttonhelper";
 
 export class BattleSettings {
   settingsButton: NativePointer = NULL;
@@ -66,6 +67,17 @@ export class BattleSettings {
     let textField = Memory.allocUtf8String("txt");
     let text = getString(createStringObject("TID_BATTLESETTINGS"));
     setText(this.settingsButton, textField, text);
+  }
+
+  createBattleButton(combatHUD: NativePointer) {
+    ButtonHelper.createButton(
+      combatHUD,
+      "sc/ui.sc",
+      "button_small_square_orange",
+      true,
+      25,
+      800,
+    );
   }
 
   show() {
