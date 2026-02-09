@@ -1,16 +1,27 @@
 import {
   addGameButton,
   base,
+  gameButtonContructor,
   getGUIInstance,
+  getHeight,
+  getMovieClip,
+  getMovieClipByName,
   getString,
   getTextFieldByName,
+  getWidth,
   malloc,
   popupBaseConstructor,
+  setDisplayObject,
+  setHeight,
+  setPixelSnappedXY,
+  setWidth,
+  setXY,
   showPopup,
+  spriteAddChild,
 } from "./definitions";
 import { Offsets } from "./offsets";
 import { createStringObject } from "./util";
-import { ButtonHelper } from "./utility/buttonhelper";
+import { Logger } from "./utility/logger";
 
 export class BattleSettings {
   settingsButton: NativePointer = NULL;
@@ -70,14 +81,28 @@ export class BattleSettings {
   }
 
   createBattleButton(combatHUD: NativePointer) {
-    ButtonHelper.createButton(
-      combatHUD,
-      "sc/ui.sc",
-      "button_small_square_orange",
-      true,
-      25,
-      800,
+    const stageWidth = base.add(Offsets.BattleScreenStageWidth).readFloat();
+    const stageHeight = base.add(Offsets.BattleScreenStageHeight).readFloat();
+    const button = malloc(200);
+
+    let movieclip = getMovieClip(
+      Memory.allocUtf8String("sc/natesworks.sc"),
+      Memory.allocUtf8String("nw_battlesettings_button"),
     );
+    setPixelSnappedXY(
+      movieclip,
+      stageWidth * 0.5 - getWidth(movieclip) / 2,
+      stageHeight - 1.5 * getHeight(movieclip),
+    );
+    spriteAddChild(combatHUD, movieclip);
+    gameButtonContructor(button);
+    let movieclip2 = getMovieClipByName(
+      movieclip,
+      Memory.allocUtf8String("battlesettings_button"),
+    );
+    setDisplayObject(button, movieclip2, 1);
+    spriteAddChild(movieclip, button);
+    Logger.debug("Added nw_battlesettings_button");
   }
 
   show() {

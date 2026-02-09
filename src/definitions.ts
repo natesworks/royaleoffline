@@ -141,6 +141,18 @@ export let spriteAddChild: NativeFunction<
   [NativePointerValue, NativePointerValue]
 >;
 export let setXY: NativeFunction<void, [NativePointerValue, number, number]>;
+export let setWidth: NativeFunction<void, [NativePointerValue, number]>;
+export let setHeight: NativeFunction<void, [NativePointerValue, number]>;
+export let setPixelSnappedXY: NativeFunction<
+  void,
+  [NativePointerValue, number, number]
+>;
+export let getMovieClipByName: NativeFunction<
+  NativePointer,
+  [NativePointerValue, NativePointerValue]
+>;
+export let getWidth: NativeFunction<number, [NativePointerValue]>;
+export let getHeight: NativeFunction<number, [NativePointerValue]>;
 
 export let userdata = new UserData();
 
@@ -291,6 +303,30 @@ export function load() {
     "pointer",
     "float",
     "float",
+  ]);
+  setWidth = new NativeFunction(base.add(Offsets.SetHeight), "void", [
+    "pointer",
+    "float",
+  ]);
+  setHeight = new NativeFunction(base.add(Offsets.SetHeight), "void", [
+    "pointer",
+    "float",
+  ]);
+  setPixelSnappedXY = new NativeFunction(
+    base.add(Offsets.SetPixelSnappedXY),
+    "void",
+    ["pointer", "float", "float"],
+  );
+  getMovieClipByName = new NativeFunction(
+    base.add(Offsets.GetMovieClipByName),
+    "pointer",
+    ["pointer", "pointer"],
+  );
+  getWidth = new NativeFunction(base.add(Offsets.GetWidth), "float", [
+    "pointer",
+  ]);
+  getHeight = new NativeFunction(base.add(Offsets.GetHeight), "float", [
+    "pointer",
   ]);
 }
 

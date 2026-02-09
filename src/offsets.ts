@@ -82,4 +82,12 @@ export const Offsets = {
   GetMovieClip: 0x2269a1,
   SpriteAddChild: 0x24308d,
   SetXY: 0x23d495,
+  SetWidth: 0x23db61,
+  SetHeight: 0x23db01,
+  SetPixelSnappedXY: 0x23d4d1,
+  BattleScreenStageWidth: 0x59ce58,
+  BattleScreenStageHeight: 0x59ce5c,
+  GetMovieClipByName: 0x23f989,
+  GetWidth: 0x23d9dd,
+  GetHeight: 0x23da59,
 };
