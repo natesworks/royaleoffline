@@ -139,4 +139,10 @@ export function installHooks() {
       }
     },
   });
+
+  Interceptor.attach(base.add(Offsets.CombatHUDConstructor), {
+    onLeave(combatHUD) {
+      battleSettings.createBattleButton(combatHUD);
+    },
+  });
 }

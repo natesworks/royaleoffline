@@ -18,14 +18,11 @@ export class AvatarNameCheckRequestMessage {
   }
 
   execute() {
-    let avatarNameCheckResponseMessage = new AvatarNameCheckResponseMessage([]);
-    avatarNameCheckResponseMessage.name = this.name;
-    avatarNameCheckResponseMessage.encode();
+    let message = new AvatarNameCheckResponseMessage([]);
+    message.name = this.name;
+    message.encode();
 
-    Messaging.sendOfflineMessage(
-      avatarNameCheckResponseMessage.getMessageType(),
-      avatarNameCheckResponseMessage.messagePayload,
-    );
+    Messaging.sendOfflineMessage(message);
   }
 
   getMessageType() {

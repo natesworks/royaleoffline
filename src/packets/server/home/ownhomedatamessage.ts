@@ -11,7 +11,7 @@ export class OwnHomeDataMessage {
     this.messagePayload = messagePayload;
   }
 
-  static encode(): number[] {
+  encode() {
     let stream = new ByteStream([]);
     const characters = CSV.getSpells();
     const config = ConfigHelper.readConfig();
@@ -480,7 +480,7 @@ export class OwnHomeDataMessage {
     stream.writeVInt(0); // AccountCreated
     stream.writeVInt(0); // PlayTime
 
-    return stream.payload;
+    this.messagePayload = stream.payload;
   }
 
   getMessageType() {

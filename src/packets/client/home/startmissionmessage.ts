@@ -19,10 +19,7 @@ export class StartMissionMessage {
     let npcSectorStateMessage = new NpcSectorStateMessage([]);
     npcSectorStateMessage.encode();
 
-    Messaging.sendOfflineMessage(
-      npcSectorStateMessage.getMessageType(),
-      npcSectorStateMessage.messagePayload,
-    );
+    Messaging.sendOfflineMessage(npcSectorStateMessage);
   }
 
   getMessageType() {

@@ -3,6 +3,7 @@ import { Messaging } from "src/messaging";
 import { userdata } from "src/definitions";
 import { Logger } from "src/utility/logger";
 import { LogicChangeNameCommand } from "src/commands/server/home/logicchangenamecommand";
+import { LogicScrollMessageFactory } from "src/logicscrollmessagefactory";
 
 export class ChangeAvatarNameMessage {
   messagePayload: number[];
@@ -27,7 +28,12 @@ export class ChangeAvatarNameMessage {
 
     let stream = new ByteStream([]);
     command.encode(stream);
-    Messaging.sendOfflineMessage(24111, stream.payload);
+
+    let message = LogicScrollMessageFactory.createMessageByType(
+      24111,
+      stream.payload,
+    );
+    Messaging.sendOfflineMessage(message);
 
     userdata.name = this.name;
     userdata.registered = true;

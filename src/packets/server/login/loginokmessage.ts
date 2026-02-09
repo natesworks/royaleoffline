@@ -7,7 +7,7 @@ export class LoginOkMessage {
     this.messagePayload = messagePayload;
   }
 
-  static encode(): number[] {
+  encode() {
     let stream = new ByteStream([]);
 
     stream.writeLong(0, 1);
@@ -35,7 +35,7 @@ export class LoginOkMessage {
     stream.writeString("");
     stream.writeString("");
 
-    return stream.payload;
+    this.messagePayload = stream.payload;
   }
 
   getMessageType() {

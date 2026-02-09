@@ -7,79 +7,52 @@ import {
 } from "./definitions";
 import { PiranhaMessage } from "./piranhamessage";
 import { Logger } from "./utility/logger";
-import { OwnHomeDataMessage } from "./packets/server/home/ownhomedatamessage";
-import { ByteStream } from "./bytestream";
-import { NpcSectorStateMessage } from "./packets/server/battle/npcsectorstatemessage";
-import { EndClientTurnMessage } from "./packets/client/home/endclientturnmessage";
-import { LoginMessage } from "./packets/client/login/loginmessage";
-import { ChangeAvatarNameMessage } from "./packets/client/home/changeavatarnamemessage";
-import { AvatarNameCheckRequestMessage } from "./packets/client/home/avatarnamecheckrequestmessage";
+import { LogicScrollMessageFactory } from "./logicscrollmessagefactory";
 
 export class Messaging {
-  static sendOfflineMessage(id: number, payload: number[]): NativePointer {
-    let version = id == 20104 ? 1 : 0;
-    let message = createMessageByType(NULL, id);
+  static sendOfflineMessage(msg: any): NativePointer {
+    const type = msg.getMessageType();
+    const payload = msg.messagePayload;
+    const name = msg.constructor.name;
+
+    let version = type == 20104 ? 1 : 0;
+    let message = createMessageByType(NULL, type);
+
     message.add(Offsets.Version).writeS32(version);
     const payloadLength = PiranhaMessage.getByteStream(message).add(
       Offsets.PayloadSize,
     );
     payloadLength.writeS32(payload.length);
+
     if (payload.length > 0) {
       let payloadPtr = operator_new(payload.length).writeByteArray(payload);
       PiranhaMessage.getByteStream(message)
         .add(Offsets.PayloadPtr)
         .writePointer(payloadPtr);
     }
-    Logger.debug("Decoding", id);
+
     let decodeOffset = message.readPointer().add(Offsets.Decode).readPointer();
     //Logger.debug("Decode function for type", id + ":", decodeOffset.sub(base));
     let decode = new NativeFunction(decodeOffset, "void", ["pointer"]);
     decode(message);
-    Logger.debug("Message", id, "decoded succesfully" + ", receiving");
+
+    Logger.debug("Decoded", name);
+
     messageManagerReceiveMessage(
       base.add(Offsets.MessageManagerInstance).readPointer(),
       message,
     );
-    Logger.debug("Message", id, "received");
+
+    Logger.debug(name, "received");
     return message;
   }
 
-  static handleMessage(id: number, messagePayload: number[]) {
-    switch (id) {
-      case 10101: {
-        let message = new LoginMessage(messagePayload);
-        message.decode();
-        message.execute();
-        break;
-      }
-      case 10212: {
-        let message = new ChangeAvatarNameMessage(messagePayload);
-        message.decode();
-        message.execute();
-        break;
-      }
-      case 14104: {
-        //Messaging.sendOfflineMessage(21903, NpcSectorStateMessage.encode());
-        break;
-      }
-      // gohomefromofflinepractice
-      case 14101: {
-        //Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
-        break;
-      }
-      // endclientturn
-      case 14102: {
-        let message = new EndClientTurnMessage(messagePayload);
-        message.decode();
-        message.execute();
-        break;
-      }
-      case 14600: {
-        let message = new AvatarNameCheckRequestMessage(messagePayload);
-        message.decode();
-        message.execute();
-        break;
-      }
-    }
+  static handleMessage(type: number, messagePayload: number[]) {
+    let message = LogicScrollMessageFactory.createMessageByType(
+      type,
+      messagePayload,
+    );
+    message.decode();
+    message.execute();
   }
 }

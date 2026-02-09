@@ -1,10 +1,9 @@
-import { ByteStream } from "src/bytestream";
 import { Messaging } from "src/messaging";
 import { OwnHomeDataMessage } from "src/packets/server/home/ownhomedatamessage";
-import { LoginOkMessage } from "src/packets/server/login/loginokmessage";
 import { initBattleSettings, loadAsset, userdata } from "src/definitions";
 import { createStringObject } from "src/util";
 import { Logger } from "src/utility/logger";
+import { LogicScrollMessageFactory } from "src/logicscrollmessagefactory";
 
 export class LoginMessage {
   messagePayload: number[];
@@ -24,8 +23,14 @@ export class LoginMessage {
     }
     initBattleSettings();
     userdata.read();
-    Messaging.sendOfflineMessage(20104, LoginOkMessage.encode());
-    Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());
+
+    let loginOk = LogicScrollMessageFactory.createMessageByType(20104, []);
+    loginOk.encode();
+    Messaging.sendOfflineMessage(loginOk);
+
+    let ohd = LogicScrollMessageFactory.createMessageByType(24101, []);
+    ohd.encode();
+    Messaging.sendOfflineMessage(ohd);
   }
 
   getMessageType() {
