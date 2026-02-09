@@ -2,7 +2,7 @@ import { ByteStream } from "src/bytestream";
 import { Messaging } from "src/messaging";
 import { OwnHomeDataMessage } from "src/packets/server/home/ownhomedatamessage";
 import { LoginOkMessage } from "src/packets/server/login/loginokmessage";
-import { loadAsset, userdata } from "src/definitions";
+import { initBattleSettings, loadAsset, userdata } from "src/definitions";
 import { createStringObject } from "src/util";
 import { Logger } from "src/utility/logger";
 
@@ -22,6 +22,7 @@ export class LoginMessage {
     } else {
       Logger.warn("sc/natesworks.sc is alreay loaded");
     }
+    initBattleSettings();
     userdata.read();
     Messaging.sendOfflineMessage(20104, LoginOkMessage.encode());
     Messaging.sendOfflineMessage(24101, OwnHomeDataMessage.encode());

@@ -1,7 +1,9 @@
+import { BattleSettings } from "./battlesettings.js";
 import { DeckHelper, Decks } from "./deck.js";
 import { Offsets } from "./offsets.js";
 import { UserData } from "./userdata.js";
 import { getDocumentsDirectory, getPackageName } from "./util.js";
+import { Logger } from "./utility/logger.js";
 
 export let base = NULL;
 
@@ -124,6 +126,8 @@ export let getGUIInstance: NativeFunction<NativePointer, []>;
 export let getString: NativeFunction<NativePointer, [NativePointerValue]>;
 
 export let userdata = new UserData();
+
+export let battleSettings: BattleSettings;
 
 export function load() {
   pkgName = getPackageName();
@@ -250,4 +254,8 @@ export function load() {
 
 export function setBase(ptr: NativePointer) {
   base = ptr;
+}
+
+export function initBattleSettings() {
+  battleSettings = new BattleSettings();
 }

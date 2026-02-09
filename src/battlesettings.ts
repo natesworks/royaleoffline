@@ -2,6 +2,7 @@ import {
   addGameButton,
   base,
   getGUIInstance,
+  getString,
   getTextFieldByName,
   malloc,
   popupBaseConstructor,
@@ -11,7 +12,11 @@ import { Offsets } from "./offsets";
 import { createStringObject } from "./util";
 
 export class BattleSettings {
-  popup: NativePointer = NULL;
+  settingsButton: NativePointer = NULL;
+  battleButton: NativePointer = NULL;
+
+  popup: NativePointer;
+  closeButton: NativePointer;
 
   constructor() {
     this.popup = malloc(1024);
@@ -31,12 +36,36 @@ export class BattleSettings {
       this.popup.add(0x98).add(i).writeU8(0);
     }
 
-    addGameButton(this.popup, Memory.allocUtf8String("close"), 1);
+    this.closeButton = addGameButton(
+      this.popup,
+      Memory.allocUtf8String("close"),
+      1,
+    );
 
     /*
     addGameButton(popup, Memory.allocUtf8String("TID_INFINITEELIXIR"), 1);
     addGameButton(popup, Memory.allocUtf8String("infiniteelixir_button_on"), 1);
     */
+  }
+
+  createSettingsButton(settingsPopup: NativePointer) {
+    this.settingsButton = addGameButton(
+      settingsPopup,
+      Memory.allocUtf8String("battlesettings_button"),
+      1,
+    );
+    let setTextOffset = this.settingsButton
+      .readPointer()
+      .add(Offsets.GameButtonSetText)
+      .readPointer();
+    let setText = new NativeFunction(setTextOffset, "void", [
+      "pointer",
+      "pointer",
+      "pointer",
+    ]);
+    let textField = Memory.allocUtf8String("txt");
+    let text = getString(createStringObject("TID_BATTLESETTINGS"));
+    setText(this.settingsButton, textField, text);
   }
 
   show() {

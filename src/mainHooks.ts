@@ -3,6 +3,7 @@ import { PiranhaMessage } from "./piranhamessage.js";
 import {
   addGameButton,
   base,
+  battleSettings,
   getGUIInstance,
   getString,
   getTextFieldByName,
@@ -126,31 +127,14 @@ export function installHooks() {
   );
 
   Interceptor.attach(base.add(Offsets.SettingPopupConstructor), {
-    onLeave(retval) {
-      battleSettingsButton = addGameButton(
-        retval,
-        Memory.allocUtf8String("battlesettings_button"),
-        1,
-      );
-      let setTextOffset = battleSettingsButton
-        .readPointer()
-        .add(Offsets.GameButtonSetText)
-        .readPointer();
-      let setText = new NativeFunction(setTextOffset, "void", [
-        "pointer",
-        "pointer",
-        "pointer",
-      ]);
-      let textField = Memory.allocUtf8String("txt");
-      let text = getString(createStringObject("TID_BATTLESETTINGS"));
-      setText(battleSettingsButton, textField, text);
+    onLeave(settingsPopup) {
+      battleSettings.createSettingsButton(settingsPopup);
     },
   });
 
   Interceptor.attach(base.add(Offsets.SettingPopupButtonClicked), {
     onEnter(args) {
-      if (args[1].equals(battleSettingsButton)) {
-        let battleSettings = new BattleSettings();
+      if (args[1].equals(battleSettings.settingsButton)) {
         battleSettings.show();
       }
     },
