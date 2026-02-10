@@ -1,24 +1,23 @@
-import { Offsets } from "./offsets";
-import { PiranhaMessage } from "./piranhamessage";
-import {
-  base,
-  battleSettings,
-  buttonHandlers,
-  startTrainingCampMatch,
-} from "./definitions";
+import { battleSettings, buttonHandlers } from "./definitions";
 import { Messaging } from "./messaging";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
 import { backtrace } from "./util";
+import { base } from "./base";
+import { PiranhaMessage } from "./titan/logic/message/piranhamessage";
+
+const startTrainingCampMatch = new NativeFunction(base.add(0x14fef1), "void", [
+  "pointer",
+]);
 
 export function installHooks() {
-  Interceptor.attach(base.add(Offsets.DebuggerWarning), {
+  Interceptor.attach(base.add(0x260f3d), {
     onEnter(args) {
       let text = args[0].readUtf8String();
       Logger.warn(text);
     },
   });
 
-  Interceptor.attach(base.add(Offsets.DebuggerError), {
+  Interceptor.attach(base.add(0x261181), {
     onEnter(args) {
       Logger.error(args[0].readUtf8String());
       Logger.debug("Backtrace:");
@@ -26,39 +25,30 @@ export function installHooks() {
     },
   });
 
-  Interceptor.attach(base.add(Offsets.ServerConnectionUpdate), {
+  Interceptor.attach(base.add(0x9e615), {
     onEnter(args) {
-      let messaging = args[0]
-        .add(Offsets.ServerConnectionMessaging)
-        .readPointer();
-      messaging.add(Offsets.HasConnectFailed).readU8();
-      let connection = messaging.add(Offsets.Connection);
-      connection.add(Offsets.State).writeU8(5);
+      let messaging = args[0].add(4).readPointer();
+      let connection = messaging.add(64);
+      connection.add(4).writeU8(5);
     },
   });
 
-  Memory.patchCode(
-    base.add(Offsets.CreateMessageByTypeLDRB),
-    Process.pageSize,
-    (code) => {
-      const pcWriter = new ThumbWriter(code);
-      pcWriter.putBranchAddress(
-        base.add(Offsets.CreateMessageByTypeJumpAddress),
-      );
-      pcWriter.flush();
-    },
-  );
+  Memory.patchCode(base.add(0x1c0120), Process.pageSize, (code) => {
+    const pcWriter = new ThumbWriter(code);
+    pcWriter.putBranchAddress(base.add(0x1c0146));
+    pcWriter.flush();
+  });
 
-  Interceptor.attach(base.add(Offsets.SendMessage), {
+  Interceptor.attach(base.add(0x99561), {
     onEnter(args) {
       PiranhaMessage.encode(args[1]);
-      let messaging = args[0].add(Offsets.Messaging).readPointer();
-      messaging.add(Offsets.State).writeInt(5);
+      let messaging = args[0].add(4).readPointer();
+      messaging.add(4).writeInt(5);
     },
   });
 
   Interceptor.replace(
-    base.add(Offsets.Send),
+    base.add(0x1fafb1),
     new NativeCallback(
       function (_self, message) {
         let type = PiranhaMessage.getMessageType(message);
@@ -68,7 +58,7 @@ export function installHooks() {
         Logger.verbose("Length:", length);
 
         let payloadPtr = PiranhaMessage.getByteStream(message)
-          .add(Offsets.PayloadPtr)
+          .add(28)
           .readPointer();
         let payload = payloadPtr.readByteArray(length);
         if (payload !== null && length > 0) {
@@ -88,17 +78,17 @@ export function installHooks() {
   );
 
   Interceptor.replace(
-    base.add(Offsets.SendKeepAliveMessage),
+    base.add(0x9d01d),
     new NativeCallback(function () {}, "void", []),
   );
 
   Interceptor.replace(
-    base.add(Offsets.ShowBadConnection),
+    base.add(0x8eb39),
     new NativeCallback(function () {}, "void", []),
   );
 
   Interceptor.replace(
-    base.add(Offsets.StartBattle),
+    base.add(0x14d851),
     new NativeCallback(
       function (a1: NativePointer) {
         startTrainingCampMatch(a1);
@@ -110,31 +100,35 @@ export function installHooks() {
 
   // i'm too lazy to figure out how to change it in OHD
   Interceptor.replace(
-    base.add(Offsets.OnArenaChanged),
+    base.add(0xae715),
     new NativeCallback(function () {}, "void", []),
   );
 
-  Interceptor.attach(base.add(Offsets.SettingPopupConstructor), {
+  Interceptor.attach(base.add(0x121431), {
     onLeave(settingsPopup) {
       battleSettings.createSettingsButton(settingsPopup);
     },
   });
 
-  Interceptor.attach(base.add(Offsets.SettingPopupButtonClicked), {
+  Interceptor.attach(base.add(0x1226ad), {
     onEnter(args) {
-      if (args[1].equals(battleSettings.settingsButton)) {
+      if (
+        battleSettings.settingsButton &&
+        args[1].equals(battleSettings.settingsButton.ptr)
+      ) {
+        battleSettings.createPopup();
         battleSettings.show();
       }
     },
   });
 
-  Interceptor.attach(base.add(Offsets.CombatHUDConstructor), {
+  Interceptor.attach(base.add(0xe9a61), {
     onLeave(combatHUD) {
       battleSettings.createBattleButton(combatHUD);
     },
   });
 
-  Interceptor.attach(base.add(Offsets.CustomButtonPressed), {
+  Interceptor.attach(base.add(0x2592b1), {
     onEnter(args) {
       const clicked = args[0];
 

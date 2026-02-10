@@ -7,7 +7,7 @@ import { LoginMessage } from "./packets/client/login/loginmessage";
 import { AvailableServerCommandMessage } from "./packets/server/home/availableservercommandmessage";
 import { OwnHomeDataMessage } from "./packets/server/home/ownhomedatamessage";
 import { LoginOkMessage } from "./packets/server/login/loginokmessage";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
 
 export class LogicScrollMessageFactory {
   static createMessageByType(type: number, messagePayload: number[]): any {

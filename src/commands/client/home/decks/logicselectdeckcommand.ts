@@ -1,4 +1,4 @@
-import { Logger } from "src/utility/logger";
+import { Logger } from "src/logger";
 import { ByteStream } from "src/bytestream";
 import { LogicCommand } from "src/logiccommand";
 import { userdata } from "src/definitions";

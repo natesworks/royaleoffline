@@ -1,6 +1,5 @@
 import { LogicScrollMessageFactory } from "src/logicscrollmessagefactory";
 import { Messaging } from "src/messaging";
-import { Logger } from "src/utility/logger";
 
 export class GoHomeFromOfflinePracticeMessage {
   messagePayload: number[];

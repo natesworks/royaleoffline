@@ -2,7 +2,7 @@ import { ByteStream } from "./bytestream";
 import { LogicSelectDeckCommand } from "./commands/client/home/decks/logicselectdeckcommand";
 import { LogicSwapSpellsCommand } from "./commands/client/home/decks/logicswapspellscommand";
 import { LogicChangeNameCommand } from "./commands/server/home/logicchangenamecommand";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
 
 export class CommandHandler {
   static createCommandOfType(id: number): any {

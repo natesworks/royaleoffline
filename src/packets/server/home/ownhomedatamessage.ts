@@ -1,8 +1,8 @@
 import { ByteStream } from "src/bytestream";
 import { ConfigHelper } from "src/config";
-import { CSV } from "src/csv";
 import { userdata } from "src/definitions";
 import { GlobalId } from "src/globalid";
+import { CSV } from "src/titan/logic/csv/csv";
 
 export class OwnHomeDataMessage {
   messagePayload: number[];

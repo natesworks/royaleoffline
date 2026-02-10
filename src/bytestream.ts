@@ -1,6 +1,6 @@
-import { GlobalId } from "./globalid.js";
-import { utf8ArrayToString, stringToUtf8Array } from "./util.js";
-import { Logger } from "./utility/logger.js";
+import { GlobalId } from "./globalid";
+import { utf8ArrayToString, stringToUtf8Array } from "./util";
+import { Logger } from "./logger";
 
 export class ByteStream {
   payload: number[];

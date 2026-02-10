@@ -1,10 +1,6 @@
-import {
-  getIntValue,
-  getJSONNumber,
-  getJSONObject,
-  loadAsset,
-} from "./definitions";
-import { createStringObject } from "./util";
+import { base } from "./base";
+import { GameMain } from "./scroll/client/gamemain";
+import { SCString } from "./titan/utils/scstring";
 
 export class Config {
   level = 1;
@@ -15,19 +11,26 @@ export class Config {
   arena = 20;
 }
 
+const getJSONObject = new NativeFunction(base.add(0x2278f5), "pointer", [
+  "pointer",
+]);
+const getJSONNumber = new NativeFunction(base.add(0x262225), "pointer", [
+  "pointer",
+  "pointer",
+]);
+const getIntValue = new NativeFunction(base.add(0x261ded), "int", ["pointer"]);
+
 export class ConfigHelper {
   static readConfig(): Config {
     const config = new Config();
 
-    const configStr = createStringObject("config.json");
-    loadAsset(configStr);
-
-    const json = getJSONObject(configStr);
+    GameMain.loadAsset("config.json");
+    const json = getJSONObject(new SCString("config.json").ptr);
 
     const keys = Object.keys(config) as (keyof Config)[];
 
     for (const key of keys) {
-      const keyStr = createStringObject(key as string);
+      const keyStr = new SCString(key as string).ptr;
       const defaultValue = config[key];
 
       if (typeof defaultValue === "number") {

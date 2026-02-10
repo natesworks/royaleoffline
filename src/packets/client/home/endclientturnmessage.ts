@@ -1,6 +1,6 @@
-import { ByteStream } from "src/bytestream.js";
-import { CommandHandler } from "src/commandhandler.js";
-import { Logger } from "src/utility/logger.js";
+import { ByteStream } from "src/bytestream";
+import { CommandHandler } from "src/commandhandler";
+import { Logger } from "src/logger";
 
 export class EndClientTurnMessage {
   messagePayload: number[];

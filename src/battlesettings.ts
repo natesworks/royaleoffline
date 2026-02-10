@@ -1,65 +1,27 @@
-import {
-  addGameButton,
-  base,
-  buttonHandlers,
-  closePopup,
-  gameButtonContructor,
-  getGUIInstance,
-  getHeight,
-  getMovieClip,
-  getMovieClipByName,
-  getString,
-  getTextFieldByName,
-  getWidth,
-  malloc,
-  popupBaseConstructor,
-  setHeight,
-  setMovieClip,
-  setPixelSnappedXY,
-  setWidth,
-  setXY,
-  showPopup,
-  spriteAddChild,
-} from "./definitions";
-import { Offsets } from "./offsets";
-import { createStringObject } from "./util";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
+import { base } from "./base";
+import { ResourceManager } from "./titan/resourcemanager";
+import { PopupBase } from "./titan/flash/gui/popupbase";
+import { GameButton } from "./titan/flash/gui/gamebutton";
+import { Sprite } from "./titan/flash/sprite";
+import { buttonHandlers } from "./definitions";
+import { GUI } from "./titan/flash/gui/gui";
+import { DropGUIContainer } from "./titan/flash/gui/dropguicontainer";
+import { SCString } from "./titan/utils/scstring";
 
 export class BattleSettings {
-  settingsButton = NULL;
-  battleButton = NULL;
+  settingsButton: GameButton | undefined;
+  battleButton: GameButton | undefined;
 
-  popup = NULL;
-  closeButton = NULL;
+  popup: PopupBase | null = null;
+  closeButton: GameButton | undefined;
 
   createPopup() {
-    this.popup = malloc(1024);
-    let scFile = createStringObject("sc/natesworks.sc");
-    let exportName = createStringObject("nw_battlesettings");
+    this.popup = new PopupBase("sc/natesworks.sc", "nw_battlesettings");
 
-    popupBaseConstructor(this.popup, scFile, exportName, 1, 0);
-    // can't name it better I got these value from scid link window
-    this.popup
-      .add(Offsets.VTablePointer)
-      .writePointer(base.add(Offsets.VTablePointerValue));
-    this.popup
-      .add(Offsets.VTablePointer2)
-      .writePointer(base.add(Offsets.VTablePointer2Value));
+    this.closeButton = this.popup.addGameButton("close");
 
-    for (let i = 0; i < 30; i++) {
-      this.popup.add(0x98).add(i).writeU8(0);
-    }
-
-    this.closeButton = addGameButton(
-      this.popup,
-      Memory.allocUtf8String("close"),
-      1,
-    );
-
-    buttonHandlers.push({
-      ptr: this.closeButton,
-      handler: (ptr) => this.onClick(ptr),
-    });
+    this.setClickHandler(this.closeButton);
 
     /*
     addGameButton(popup, Memory.allocUtf8String("TID_INFINITEELIXIR"), 1);
@@ -67,82 +29,74 @@ export class BattleSettings {
     */
   }
 
-  createSettingsButton(settingsPopup: NativePointer) {
-    this.settingsButton = addGameButton(
-      settingsPopup,
-      Memory.allocUtf8String("battlesettings_button"),
-      1,
+  createSettingsButton(settingsPopupPtr: NativePointer) {
+    const settingsPopup = new DropGUIContainer(settingsPopupPtr);
+
+    this.settingsButton = settingsPopup.addGameButton("battlesettings_button");
+    this.settingsButton.setText(
+      "txt",
+      SCString.get("TID_BATTLESETTINGS").readContents(),
     );
-    let setTextOffset = this.settingsButton
-      .readPointer()
-      .add(Offsets.GameButtonSetText)
-      .readPointer();
-    let setText = new NativeFunction(setTextOffset, "void", [
-      "pointer",
-      "pointer",
-      "pointer",
-    ]);
-    let textField = Memory.allocUtf8String("txt");
-    let text = getString(createStringObject("TID_BATTLESETTINGS"));
-    setText(this.settingsButton, textField, text);
   }
 
   createBattleButton(combatHUD: NativePointer) {
-    const stageWidth = base.add(Offsets.BattleScreenStageWidth).readFloat();
-    const stageHeight = base.add(Offsets.BattleScreenStageHeight).readFloat();
-    const button = malloc(200);
-    gameButtonContructor(button);
+    const stageWidth = base.add(0x59ce58).readFloat();
+    const stageHeight = base.add(0x59ce5c).readFloat();
+    const button = new GameButton();
 
-    let movieclip = getMovieClip(
-      Memory.allocUtf8String("sc/natesworks.sc"),
-      Memory.allocUtf8String("nw_battlesettings_button"),
+    let movieclip = ResourceManager.getMovieClip(
+      "sc/natesworks.sc",
+      "nw_battlesettings_button",
     );
-    let movieclip2 = getMovieClipByName(
-      movieclip,
-      Memory.allocUtf8String("battlesettings_button"),
-    );
-    setMovieClip(button, movieclip2, 1);
-    setPixelSnappedXY(
-      button,
-      stageWidth * 0.5 - getWidth(button) / 2,
-      stageHeight - 1.5 * getHeight(button),
-    );
-    spriteAddChild(combatHUD, button);
+    let movieclip2 = movieclip.getMovieClipByName("battlesettings_button");
+    button.setMovieClip(movieclip2);
+
+    button.x = stageWidth * 0.5 - button.getWidth() / 2;
+    button.y = stageHeight - 1.5 * button.getHeight();
+    Logger.debug(button.x, button.y);
+    new Sprite(combatHUD).addChild(button);
 
     this.battleButton = button;
-
-    buttonHandlers.push({
-      ptr: this.battleButton,
-      handler: (ptr) => this.onClick(ptr),
-    });
+    this.setClickHandler(this.battleButton);
 
     Logger.debug("Added nw_battlesettings_button");
+  }
+
+  setClickHandler(button: GameButton) {
+    const ptr = button.ptr;
+    const entry = buttonHandlers.find((e) => e.ptr.equals(ptr));
+    const handler = (button: NativePointer) => this.onClick(ptr);
+
+    if (entry) {
+      entry.handler = handler;
+    } else {
+      buttonHandlers.push({ ptr, handler });
+    }
   }
 
   onClick(button: NativePointer) {
     Logger.debug("Button clicked");
 
-    if (button.equals(this.battleButton)) {
+    if (this.battleButton && button.equals(this.battleButton.ptr)) {
+      this.createPopup();
       this.show();
-    } else if (button.equals(this.closeButton)) {
+    } else if (this.closeButton && button.equals(this.closeButton.ptr)) {
       this.hide();
     }
   }
 
   show() {
-    if (this.popup.isNull()) this.createPopup();
-    showPopup(getGUIInstance(), this.popup, 1, 1, 1);
+    if (this.popup && !this.popup.ptr.isNull())
+      GUI.showPopup(this.popup.ptr, 1, 1, 1);
+    else Logger.warn("Attempting to show non-existent popup");
   }
 
-  // GUI::closePopup doesn't exist in this version
   hide() {
-    let vtable = this.popup.readPointer();
-    let modalClose = new NativeFunction(
-      vtable.add(Offsets.ModalClose).readPointer(),
-      "void",
-      ["pointer"],
-    );
-    modalClose(this.popup);
-    this.popup = NULL;
+    if (!this.popup || this.popup.ptr.isNull()) {
+      Logger.warn("Attempting to hide non-existent popup");
+    } else {
+      this.popup.modalClose();
+      this.createPopup();
+    }
   }
 }

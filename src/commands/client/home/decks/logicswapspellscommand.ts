@@ -1,8 +1,7 @@
 import { ByteStream } from "src/bytestream";
 import { LogicCommand } from "src/logiccommand";
 import { userdata } from "src/definitions";
-import { CSV } from "src/csv";
-import { Logger } from "src/utility/logger";
+import { CSV } from "src/titan/logic/csv/csv";
 
 export class LogicSwapSpellsCommandthis {
   cardOffset = 0;

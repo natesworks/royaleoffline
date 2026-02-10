@@ -1,7 +1,7 @@
 import { ByteStream } from "./bytestream";
 import { DeckHelper, Decks } from "./deck";
 import { access, documentsDirectory, unlink } from "./definitions";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
 
 export class UserData {
   name = "";

@@ -1,8 +1,7 @@
 import { ByteStream } from "./bytestream";
 import { Character } from "./character";
-import { CSV } from "./csv";
-import { access, documentsDirectory, unlink } from "./definitions";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
+import { CSV } from "./titan/logic/csv/csv";
 
 export class Deck {
   characters: Character[];

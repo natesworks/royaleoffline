@@ -1,9 +1,9 @@
 import { Messaging } from "src/messaging";
-import { OwnHomeDataMessage } from "src/packets/server/home/ownhomedatamessage";
-import { initBattleSettings, loadAsset, userdata } from "src/definitions";
-import { createStringObject } from "src/util";
-import { Logger } from "src/utility/logger";
+import { userdata } from "src/definitions";
+import { Logger } from "src/logger";
 import { LogicScrollMessageFactory } from "src/logicscrollmessagefactory";
+import { SCString } from "src/titan/utils/scstring";
+import { GameMain } from "src/scroll/client/gamemain";
 
 export class LoginMessage {
   messagePayload: number[];
@@ -15,13 +15,12 @@ export class LoginMessage {
   decode() {}
 
   execute() {
-    let result = loadAsset(createStringObject("sc/natesworks.sc"));
+    let result = GameMain.loadAsset("sc/natesworks.sc");
     if (result) {
       Logger.debug("Loaded sc/natesworks.sc");
     } else {
       Logger.warn("sc/natesworks.sc is alreay loaded");
     }
-    initBattleSettings();
     userdata.read();
 
     let loginOk = LogicScrollMessageFactory.createMessageByType(20104, []);

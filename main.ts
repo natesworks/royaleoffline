@@ -8,6 +8,13 @@ async function main() {
   const source = fs.readFileSync("script.js", "utf8");
   const script = await session.createScript(source);
 
+  script.message.connect((message, data) => {
+    // thanks Hallo
+    if (message.type === "error") {
+      console.error(message.stack);
+    }
+  });
+
   await script.load();
 }
 

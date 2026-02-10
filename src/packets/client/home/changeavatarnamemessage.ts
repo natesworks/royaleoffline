@@ -1,7 +1,7 @@
 import { ByteStream } from "src/bytestream";
 import { Messaging } from "src/messaging";
 import { userdata } from "src/definitions";
-import { Logger } from "src/utility/logger";
+import { Logger } from "src/logger";
 import { LogicChangeNameCommand } from "src/commands/server/home/logicchangenamecommand";
 import { LogicScrollMessageFactory } from "src/logicscrollmessagefactory";
 

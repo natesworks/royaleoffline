@@ -1,14 +1,6 @@
-import {
-  base,
-  malloc,
-  mkdir,
-  pkgName,
-  stringCtor,
-  getuid,
-} from "./definitions";
-import { Offsets } from "./offsets";
+import { mkdir, pkgName, getuid } from "./definitions";
 import { isAndroid } from "./platform";
-import { Logger } from "./utility/logger";
+import { Logger } from "./logger";
 
 const read = new NativeFunction(
   Process.getModuleByName(
@@ -40,10 +32,6 @@ export function getPackageName() {
   if (n <= 0) return "";
   const arr = new Uint8Array(buf.readByteArray(n) as ArrayBuffer);
   return String.fromCharCode(...arr).replace(/\0+$/, "");
-}
-
-export function getMessageManagerInstance(): NativePointer {
-  return base.add(Offsets.MessageManagerInstance).readPointer();
 }
 
 export function getDocumentsDirectory(): string {
@@ -105,30 +93,6 @@ export function stringToUtf8Array(str: string): Uint8Array {
     }
   }
   return new Uint8Array(utf8);
-}
-
-function _decodeString(src: NativePointer): string | null {
-  let len = src.add(4).readInt();
-  if (len >= 8) {
-    return src.add(8).readPointer().readUtf8String(len);
-  }
-  return src.add(8).readUtf8String(len);
-}
-
-export function decodeString(src: NativePointer): string {
-  let res = _decodeString(src);
-  if (!res) {
-    Logger.error("Failed to decode string");
-    throw new Error();
-  }
-  return res;
-}
-
-// TODO: don't leak memory
-export function createStringObject(text: string) {
-  let ptr = malloc(128);
-  stringCtor(ptr, Memory.allocUtf8String(text));
-  return ptr;
 }
 
 export function backtrace(ctx: CpuContext | undefined): void {
