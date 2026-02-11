@@ -2,6 +2,7 @@ import { base } from "src/base";
 import { MovieClip } from "../movieclip";
 import { Sprite } from "../sprite";
 import { Logger } from "src/logger";
+import { IButtonListener } from "./ibuttonlistener";
 
 export class CustomButton extends Sprite {
   constructor(ptr: NativePointer) {

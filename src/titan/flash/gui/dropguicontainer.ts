@@ -1,5 +1,6 @@
 import { base } from "src/base";
 import { GameButton } from "./gamebutton";
+import { GUIContainer } from "./guicontainer";
 
 const addGameButton = new NativeFunction(base.add(0x96c6d), "pointer", [
   "pointer",
@@ -7,11 +8,9 @@ const addGameButton = new NativeFunction(base.add(0x96c6d), "pointer", [
   "bool",
 ]);
 
-export class DropGUIContainer {
-  ptr: NativePointer;
-
+export class DropGUIContainer extends GUIContainer {
   constructor(ptr: NativePointer) {
-    this.ptr = ptr;
+    super(ptr);
   }
 
   addGameButton(button: string) {

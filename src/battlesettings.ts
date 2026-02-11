@@ -4,10 +4,12 @@ import { ResourceManager } from "./titan/resourcemanager";
 import { PopupBase } from "./titan/flash/gui/popupbase";
 import { GameButton } from "./titan/flash/gui/gamebutton";
 import { Sprite } from "./titan/flash/sprite";
-import { buttonHandlers } from "./definitions";
+import { buttonHandlers, userdata } from "./definitions";
 import { GUI } from "./titan/flash/gui/gui";
 import { DropGUIContainer } from "./titan/flash/gui/dropguicontainer";
 import { SCString } from "./titan/utils/scstring";
+import { GameSelectableButton } from "./titan/flash/gui/gameselectablebutton";
+import { CustomButton } from "./titan/flash/gui/custombutton";
 
 export class BattleSettings {
   settingsButton: GameButton | undefined;
@@ -16,17 +18,30 @@ export class BattleSettings {
   popup: PopupBase | null = null;
   closeButton: GameButton | undefined;
 
+  infiniteElixirButton: GameSelectableButton | undefined;
+
   createPopup() {
     this.popup = new PopupBase("sc/natesworks.sc", "nw_battlesettings");
 
     this.closeButton = this.popup.addGameButton("close");
 
-    this.setClickHandler(this.closeButton);
+    const popupMovieClip = this.popup.getMovieClip();
+    const infiniteElixirMovieClip = popupMovieClip.getMovieClipByName(
+      "infiniteelixir_button_on",
+    );
+    this.infiniteElixirButton = new GameSelectableButton();
+    this.infiniteElixirButton.setMovieClip(infiniteElixirMovieClip);
+    this.infiniteElixirButton.setText(
+      "txt",
+      SCString.get(
+        "TID_SETTINGS_" + userdata.infiniteElixirEnabled ? "OFF" : "ON",
+      ).readContents(),
+    );
+    this.infiniteElixirButton.setSelected(userdata.infiniteElixirEnabled);
+    this.popup.addChild(this.infiniteElixirButton);
 
-    /*
-    addGameButton(popup, Memory.allocUtf8String("TID_INFINITEELIXIR"), 1);
-    addGameButton(popup, Memory.allocUtf8String("infiniteelixir_button_on"), 1);
-    */
+    this.setClickHandler(this.closeButton);
+    this.setClickHandler(this.infiniteElixirButton);
   }
 
   createSettingsButton(settingsPopupPtr: NativePointer) {
@@ -62,10 +77,10 @@ export class BattleSettings {
     Logger.debug("Added nw_battlesettings_button");
   }
 
-  setClickHandler(button: GameButton) {
+  setClickHandler(button: CustomButton | GameButton | GameSelectableButton) {
     const ptr = button.ptr;
     const entry = buttonHandlers.find((e) => e.ptr.equals(ptr));
-    const handler = (button: NativePointer) => this.onClick(ptr);
+    const handler = (button: NativePointer) => this.onClick(button);
 
     if (entry) {
       entry.handler = handler;
@@ -75,14 +90,28 @@ export class BattleSettings {
   }
 
   onClick(button: NativePointer) {
-    Logger.debug("Button clicked");
-
     if (this.battleButton && button.equals(this.battleButton.ptr)) {
       this.createPopup();
       this.show();
     } else if (this.closeButton && button.equals(this.closeButton.ptr)) {
       this.hide();
+    } else if (
+      this.infiniteElixirButton &&
+      button.equals(this.infiniteElixirButton.ptr)
+    ) {
+      this.toggleInfiniteElixir();
     }
+  }
+
+  toggleInfiniteElixir() {
+    if (!this.infiniteElixirButton) return; // never true but typescript is a piece of shit
+
+    const newState = !this.infiniteElixirButton.isSelected();
+    const text = newState ? "TID_SETTINGS_ON" : "TID_SETTINGS_OFF";
+    this.infiniteElixirButton.setText("txt", SCString.get(text).readContents());
+    userdata.infiniteElixirEnabled = newState;
+    userdata.write();
+    Logger.debug("Infinite elixir set to", userdata.infiniteElixirEnabled);
   }
 
   show() {

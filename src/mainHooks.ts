@@ -140,4 +140,17 @@ export function installHooks() {
       }
     },
   });
+
+  Interceptor.attach(base.add(0x25c385), {
+    onEnter(args) {
+      const clicked = args[0];
+
+      for (const entry of buttonHandlers) {
+        if (entry.ptr.equals(clicked)) {
+          entry.handler(clicked);
+          break;
+        }
+      }
+    },
+  });
 }

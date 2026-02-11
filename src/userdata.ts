@@ -8,6 +8,8 @@ export class UserData {
   registered = false;
   decks = new Decks();
 
+  infiniteElixirEnabled = false;
+
   write() {
     const path = documentsDirectory + "/userdata.bin";
     unlink(Memory.allocUtf8String(path));
@@ -18,6 +20,7 @@ export class UserData {
     stream.writeByte(version);
 
     stream.writeString(this.name);
+    stream.writeBoolean(this.infiniteElixirEnabled);
     DeckHelper.writeDecks(stream, this.decks);
 
     File.writeAllBytes(path, stream.payload);
@@ -35,7 +38,7 @@ export class UserData {
     const stream = new ByteStream(Array.from(new Uint8Array(data)));
 
     let version = stream.readByte();
-    if (version != 1) {
+    if (version > 1) {
       let text = "Unsupported user data version";
       Logger.warn(text);
       this.write();
@@ -44,6 +47,7 @@ export class UserData {
     let name = stream.readString();
     this.name = name;
     this.registered = name != "";
+    this.infiniteElixirEnabled = stream.readBoolean();
 
     let decks = DeckHelper.readDecks(stream);
     this.decks = decks;
