@@ -1,4 +1,4 @@
-import { battleSettings, buttonHandlers } from "./definitions";
+import { battleSettings, buttonHandlers, userdata } from "./definitions";
 import { Messaging } from "./messaging";
 import { Logger } from "./logger";
 import { backtrace } from "./util";
@@ -8,6 +8,7 @@ import { PiranhaMessage } from "./titan/logic/message/piranhamessage";
 const startTrainingCampMatch = new NativeFunction(base.add(0x14fef1), "void", [
   "pointer",
 ]);
+const isOwnedByAI = new NativeFunction(base.add(0x1ad9ed), "bool", ["pointer"]);
 
 export function installHooks() {
   Interceptor.attach(base.add(0x260f3d), {
@@ -151,6 +152,26 @@ export function installHooks() {
           break;
         }
       }
+    },
+  });
+
+  Interceptor.attach(base.add(0x1b39e5), {
+    onEnter(args) {
+      this.a1 = args[0];
+    },
+    onLeave(retval) {
+      if (userdata.infiniteElixirEnabled && !isOwnedByAI(this.a1))
+        retval.replace(ptr(10));
+    },
+  });
+
+  Interceptor.attach(base.add(0x1b39dd), {
+    onEnter(args) {
+      this.a1 = args[0];
+    },
+    onLeave(retval) {
+      if (userdata.infiniteElixirEnabled && !isOwnedByAI(this.a1))
+        retval.replace(ptr(10));
     },
   });
 }

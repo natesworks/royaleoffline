@@ -34,7 +34,7 @@ export class BattleSettings {
     this.infiniteElixirButton.setText(
       "txt",
       SCString.get(
-        "TID_SETTINGS_" + userdata.infiniteElixirEnabled ? "OFF" : "ON",
+        "TID_SETTINGS_" + userdata.infiniteElixirEnabled ? "ON" : "OFF", // TODO: move to update
       ).readContents(),
     );
     this.infiniteElixirButton.setSelected(userdata.infiniteElixirEnabled);
