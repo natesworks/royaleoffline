@@ -9,6 +9,7 @@ const setWidth = new NativeFunction(base.add(0x23db61), "void", [
   "pointer",
   "float",
 ]);
+const getAlpha = new NativeFunction(base.add(0x23dc15), "float", ["pointer"]);
 
 export class DisplayObject {
   ptr: NativePointer;
@@ -57,5 +58,18 @@ export class DisplayObject {
 
   set y(value: number) {
     this.ptr.add(12).add(20).writeFloat(value);
+  }
+
+  set alpha(value: number) {
+    const vtable = this.ptr.readPointer();
+    new NativeFunction(
+      vtable.add(13 * Process.pointerSize).readPointer(),
+      "void",
+      ["pointer", "float"],
+    )(this.ptr, value);
+  }
+
+  get alpha(): number {
+    return getAlpha(this.ptr);
   }
 }

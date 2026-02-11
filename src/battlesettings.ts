@@ -12,6 +12,8 @@ import { GameSelectableButton } from "./titan/flash/gui/gameselectablebutton";
 import { CustomButton } from "./titan/flash/gui/custombutton";
 
 export class BattleSettings {
+  open = false;
+
   settingsButton: GameButton | undefined;
   battleButton: GameButton | undefined;
 
@@ -31,12 +33,6 @@ export class BattleSettings {
     );
     this.infiniteElixirButton = new GameSelectableButton();
     this.infiniteElixirButton.setMovieClip(infiniteElixirMovieClip);
-    this.infiniteElixirButton.setText(
-      "txt",
-      SCString.get(
-        "TID_SETTINGS_" + userdata.infiniteElixirEnabled ? "ON" : "OFF", // TODO: move to update
-      ).readContents(),
-    );
     this.infiniteElixirButton.setSelected(userdata.infiniteElixirEnabled);
     this.popup.addChild(this.infiniteElixirButton);
 
@@ -68,7 +64,6 @@ export class BattleSettings {
 
     button.x = stageWidth * 0.5 - button.getWidth() / 2;
     button.y = stageHeight - 1.5 * button.getHeight();
-    Logger.debug(button.x, button.y);
     new Sprite(combatHUD).addChild(button);
 
     this.battleButton = button;
@@ -107,17 +102,16 @@ export class BattleSettings {
     if (!this.infiniteElixirButton) return; // never true but typescript is a piece of shit
 
     const newState = !this.infiniteElixirButton.isSelected();
-    const text = newState ? "TID_SETTINGS_ON" : "TID_SETTINGS_OFF";
-    this.infiniteElixirButton.setText("txt", SCString.get(text).readContents());
     userdata.infiniteElixirEnabled = newState;
     userdata.write();
     Logger.debug("Infinite elixir set to", userdata.infiniteElixirEnabled);
   }
 
   show() {
-    if (this.popup && !this.popup.ptr.isNull())
+    if (this.popup && !this.popup.ptr.isNull()) {
       GUI.showPopup(this.popup.ptr, 1, 1, 1);
-    else Logger.warn("Attempting to show non-existent popup");
+      this.open = true;
+    } else Logger.warn("Attempting to show non-existent popup");
   }
 
   hide() {
@@ -125,7 +119,16 @@ export class BattleSettings {
       Logger.warn("Attempting to hide non-existent popup");
     } else {
       this.popup.modalClose();
+      this.open = false;
       this.createPopup();
     }
+  }
+
+  update() {
+    if (!this.infiniteElixirButton) return;
+
+    const state = this.infiniteElixirButton.isSelected();
+    const text = state ? "TID_SETTINGS_ON" : "TID_SETTINGS_OFF";
+    this.infiniteElixirButton.setText("txt", SCString.get(text).readContents());
   }
 }

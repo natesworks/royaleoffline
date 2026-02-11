@@ -174,4 +174,12 @@ export function installHooks() {
         retval.replace(ptr(10));
     },
   });
+
+  Interceptor.attach(base.add(0x6b6b5), {
+    onEnter(args) {
+      if (battleSettings.open) {
+        battleSettings.update();
+      }
+    },
+  });
 }
