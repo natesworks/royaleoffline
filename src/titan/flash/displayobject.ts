@@ -63,7 +63,7 @@ export class DisplayObject {
   set alpha(value: number) {
     const vtable = this.ptr.readPointer();
     new NativeFunction(
-      vtable.add(13 * Process.pointerSize).readPointer(),
+      vtable.add(10 * Process.pointerSize).readPointer(),
       "void",
       ["pointer", "float"],
     )(this.ptr, value);

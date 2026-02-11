@@ -8,7 +8,6 @@ import { PiranhaMessage } from "./titan/logic/message/piranhamessage";
 const startTrainingCampMatch = new NativeFunction(base.add(0x14fef1), "void", [
   "pointer",
 ]);
-const isOwnedByAI = new NativeFunction(base.add(0x1ad9ed), "bool", ["pointer"]);
 
 export function installHooks() {
   Interceptor.attach(base.add(0x260f3d), {
@@ -105,30 +104,6 @@ export function installHooks() {
     new NativeCallback(function () {}, "void", []),
   );
 
-  Interceptor.attach(base.add(0x121431), {
-    onLeave(settingsPopup) {
-      battleSettings.createSettingsButton(settingsPopup);
-    },
-  });
-
-  Interceptor.attach(base.add(0x1226ad), {
-    onEnter(args) {
-      if (
-        battleSettings.settingsButton &&
-        args[1].equals(battleSettings.settingsButton.ptr)
-      ) {
-        battleSettings.createPopup();
-        battleSettings.show();
-      }
-    },
-  });
-
-  Interceptor.attach(base.add(0xe9a61), {
-    onLeave(combatHUD) {
-      battleSettings.createBattleButton(combatHUD);
-    },
-  });
-
   Interceptor.attach(base.add(0x2592b1), {
     onEnter(args) {
       const clicked = args[0];
@@ -155,31 +130,9 @@ export function installHooks() {
     },
   });
 
-  Interceptor.attach(base.add(0x1b39e5), {
-    onEnter(args) {
-      this.a1 = args[0];
-    },
-    onLeave(retval) {
-      if (userdata.infiniteElixirEnabled && !isOwnedByAI(this.a1))
-        retval.replace(ptr(10));
-    },
-  });
-
-  Interceptor.attach(base.add(0x1b39dd), {
-    onEnter(args) {
-      this.a1 = args[0];
-    },
-    onLeave(retval) {
-      if (userdata.infiniteElixirEnabled && !isOwnedByAI(this.a1))
-        retval.replace(ptr(10));
-    },
-  });
-
   Interceptor.attach(base.add(0x6b6b5), {
     onEnter(args) {
-      if (battleSettings.open) {
-        battleSettings.update();
-      }
+      battleSettings.update();
     },
   });
 }
